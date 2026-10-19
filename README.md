@@ -38,7 +38,9 @@ The plugin ID remains `banana-design`, the command remains `open`, and the setti
 
 ## Install
 
-Community directory submission is pending; do not treat a GitHub Release as approval by Obsidian.
+Open the official [Obsidian Community listing](https://community.obsidian.md/plugins/banana-design) and choose **Add to Obsidian**. Version 0.10.1 was published on 2026-10-19; its automated review completed with **Health: Excellent** and **Review: Satisfactory**, including a byte-for-byte reproduced build. Review warnings remain visible on the listing.
+
+The bundled `main.js` is 5,507,343 bytes. Obsidian Sync Standard cannot sync files larger than 5 MB, so install the plugin separately on each desktop if you use that plan. The release embeds the offline template previews in the standard three-file package.
 
 For a manual install, download **main.js**, **manifest.json** and **styles.css** from the matching [GitHub Release](https://github.com/TreyDong/banana-design/releases) and place them in `<vault>/.obsidian/plugins/banana-design/`. Enable Banana Design in Community plugins. Do not copy source folders or any other person's `data.json` into the vault.
 
