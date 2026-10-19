@@ -38,3 +38,23 @@ Offline SVG previews are original geometric layout studies, explicitly labeled a
 - Updated the user's existing Banana Design three-file installation after preserving the previous three files in a local rollback snapshot. No data.json or generated image was changed.
 - Reloaded only Banana Design in Obsidian 1.14.4. The real template library shows all 15 templates, all 12 new previews and descriptions, and retains the previously selected neon card. Existing cover candidates and history remain visible. No model request was sent during verification.
 - Reader's installed manifest, runtime, styles and data, plus Design data.json, still match their pre-task SHA-256 fingerprints after the UI reload. Reader's project directory was renamed separately; concurrent Reader development changes were preserved.
+
+## Cover-quality correction — 2026-10-19 22:10
+
+The user reported that the new templates looked elementary and did not resemble finished covers. Inspection confirmed that all twelve previews were 360×230 geometric SVG layout studies, and that some diagram categories were being offered without a distinct cover-quality gate. Their availability and passing code tests did not validate generated image quality.
+
+Three real covers were generated with built-in imagegen for the exact example title “审美不够，怎么用 AI 做出更有质感的产品？”, preserving all words and punctuation. The directions are conceptual paper typography, cinematic spatial narrative and tactile metaphorical still life. The original full-resolution files remain in the task's generated-image output. Offline WebP preview copies preserve the complete composition and are embedded by the standard three-file build; packaging does not add a network dependency.
+
+Updated cover prompts specify subject/meaning, headline hierarchy, material, light, depth, negative space and exclusions. The current article still supplies the subject; the sample paper block, museum and plaster object are explicitly not fixed subjects for later articles. Article-body prompts remain separate. The nine other recipes remain available for body illustrations; the cover list retains existing active choices and user overrides while prioritizing only the three sampled directions and three original templates.
+
+The samples are real outputs of the built-in imagegen tool, not evidence that the user's currently selected plugin image provider will produce exactly the same result. Native Obsidian validation and installation are deferred at the user's request; no personal plugin data, current template selection, existing image or installed plugin file is changed in this correction.
+
+### Sample prompt set
+
+Common: one finished Chinese editorial cover, landscape 2.35:1; exact title “审美不够，怎么用 AI 做出更有质感的产品？”; preserve all characters and punctuation, natural line breaks, prominent legible headline, 6% safe margins; no extra words, logo, watermark, frame, metrics, sales cards, collage or UI screenshot.
+
+- Conceptual paper typography: warm ivory, deep near-black monumental Chinese type, restrained vermilion; an ordinary paper block opening into precise folded architectural forms, layered edges and grazing light. Integrate a controlled part of the sculpture behind the headline without hiding characters. Output preview: `assets/gpt-concept-type.webp`.
+- Cinematic narrative: dark concrete museum-like atelier, one observer, one crafted sculptural object in warm directional light, foreground shadow, middle-ground action, distant daylight; the headline belongs to the calm shadow plane. Output preview: `assets/gpt-cinematic-story.webp`.
+- Metaphorical still life: coarse plaster cut open to show a refined folded-metal interior, believable edge thickness and tool marks, sculptural side light and grounded soft shadow; object right and exact headline left. Output preview: `assets/gpt-object-editorial.webp`.
+
+These sample subjects demonstrate the material/composition directions; runtime templates explicitly derive new subjects from the article. All three full-resolution results were inspected for the complete title, composition, subject and material. Packaged previews are 960×409 WebP, 52–59 KB each, preserving the whole image rather than cropping the headline. Build passes and all 13 regression tests pass, including distinct cover/body choices, retained active/custom templates, self-contained installation and existing API/path protections. The three-file bundle remains above the known 5 MB Standard Sync file-size threshold; this correction does not claim that limitation is resolved.

@@ -24,12 +24,12 @@ function load(filename, expose=false) {
   const mod={exports:{}}; const local=createRequire(filename);
   const safeRequire = id => {
     if(id==='obsidian') return host;
-    if(/\.(png|svg)$/.test(id)) { const file=path.resolve(path.dirname(filename),id); return 'data:image/'+(id.endsWith('svg')?'svg+xml':'png')+';base64,'+fs.readFileSync(file).toString('base64'); }
+    if(/\.(png|svg|webp)$/.test(id)) { const file=path.resolve(path.dirname(filename),id); return 'data:image/'+(id.endsWith('svg')?'svg+xml':id.endsWith('webp')?'webp':'png')+';base64,'+fs.readFileSync(file).toString('base64'); }
     if(id==='child_process') return {...require(id),spawn(){throw new Error('Unexpected child process during plugin load');},execFileSync(){throw new Error('Unexpected CLI discovery during plugin load');}};
     return local(id);
   };
   let source=fs.readFileSync(filename,'utf8');
-  if(expose) source+='\nmodule.exports.testHooks = {readGeneratedImage,BDView,TemplateLibraryModal,PromptTemplateEditor,imageFolder,outputRules,createOutputTask,outputImageName,promptTemplates,figureRecipe,renderFigureRecipe,renderTemplatePrompt};';
+  if(expose) source+='\nmodule.exports.testHooks = {readGeneratedImage,BDView,TemplateLibraryModal,PromptTemplateEditor,imageFolder,outputRules,createOutputTask,outputImageName,promptTemplates,templateChoices,figureRecipe,renderFigureRecipe,renderTemplatePrompt};';
   vm.runInNewContext(source,{module:mod,exports:mod.exports,require:safeRequire,Buffer,URL,Blob,process,console,setTimeout,clearTimeout,AbortController,document:{getElementById:()=>null}},{filename});
   return mod.exports;
 }
@@ -133,7 +133,9 @@ test('new article recipes render chosen dimensions and keep cover titles out of 
     assert.ok(figure.includes('1200 x 800'));assert.ok(figure.includes('Never use the article title as a headline'));
     assert.ok(!figure.includes('事实与观点'));assert.ok(!/\{(?:concept|width|height|ratio|text_rule)\}/.test(figure));
     const preview=hooks.BDView.prototype.templatePreview.call({},template);
-    assert.ok(preview.startsWith('data:image/svg+xml;'));assert.ok(decodeURIComponent(preview).includes('构图示意'));
+    if(template.coverReady){assert.ok(preview.startsWith('data:image/webp;'));assert.equal(template.coverPreviewKind,'generated-sample');}
+    else {assert.ok(preview.startsWith('data:image/svg+xml;'));assert.ok(decodeURIComponent(preview).includes('构图示意'));}
+    const bodyPreview=hooks.BDView.prototype.templatePreview.call({},template,'figure');assert.ok(bodyPreview.startsWith('data:image/svg+xml;'));
   }
 });
 test('catalog expansion preserves user overrides, copied templates and legacy IDs without mutating settings',()=>{
@@ -143,4 +145,15 @@ test('catalog expansion preserves user overrides, copied templates and legacy ID
   assert.equal(templates.find(t=>t.id==='gpt-paper-world').imagePrompt,'My image');
   for(const id of ['blank','dan-koe','neon-card','private-copy'])assert.ok(templates.some(t=>t.id===id));
   assert.equal(JSON.stringify(settings),before);
+});
+
+test('cover library separates validated covers from body diagrams while preserving active and custom choices',()=>{
+  const settings={promptTemplates:[]};
+  const covers=hooks.templateChoices(settings,'cover');assert.equal(covers.length,6);
+  for(const id of ['gpt-concept-type','gpt-cinematic-story','gpt-object-editorial','dan-koe','neon-card','blank'])assert.ok(covers.some(t=>t.id===id));
+  assert.ok(!covers.some(t=>t.id==='gpt-knowledge-flow'));
+  assert.equal(hooks.templateChoices(settings,'figure').length,15);
+  assert.ok(hooks.templateChoices(settings,'cover','gpt-knowledge-flow').some(t=>t.id==='gpt-knowledge-flow'));
+  const custom={promptTemplates:[{id:'gpt-paper-world',name:'我的纸雕',planningPrompt:'My plan',imagePrompt:'My image'}]};
+  assert.ok(hooks.templateChoices(custom,'cover').some(t=>t.id==='gpt-paper-world'));
 });
