@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+target/
+/main.js
+data.json
+backup*
+*.zip
+.env*
+gateway.env
+generation.json
+agent.json
+.DS_Store
