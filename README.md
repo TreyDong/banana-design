@@ -1,0 +1,72 @@
+# Banana Design
+
+Create article-led covers and illustrations in Obsidian desktop. Choose an article, a visual template, and independent planning and image services. Preview results, export PNGs, and insert illustrations at approved locations.
+
+**Desktop only · Obsidian 1.11.4 or later · Version 0.10.1**
+
+## Use
+
+1. Enable the plugin and run **Open illustration workspace** (`banana-design:open`, displayed in Chinese as 打开配图工作台), or select its ribbon icon.
+2. Select a Markdown article. Choose a format and a template, including the built-in blank, engraving-inspired, and local card layouts. Dimensions and visual style are independent.
+3. For a cover, enter the request and choose 1–4 candidates. Generated images are saved as new files; old results remain in history.
+4. For article illustrations, generate a plan, review or edit the complete batch, then confirm generation. Owned markers reserve the chosen paragraphs; batch insertion replaces only valid markers. Missing or ambiguous targets stop insertion and never silently append images.
+5. Export the selected PNG, insert a cover, or return to an earlier batch. Restarting the workspace clears the current view while retaining saved images and history.
+
+The interface is currently in Chinese. The plugin does not replace the Markdown editor or provide a general autonomous agent. Local card layouts export a flattened PNG; generated image edits use an entire reference image, without a layer or mask editor.
+
+## Models and connections
+
+In plugin settings, configure **Planning** and **Image generation** independently. Use an already installed and signed-in Codex CLI, or add your own API connection. Available API formats include OpenAI Chat Completions, Responses, Anthropic Messages, OpenAI-compatible Images, Gemini native images, Seedream and OpenRouter images. Presets are editable endpoint suggestions; they do not establish that an account has model access. A fetched model list is not an entitlement guarantee.
+
+New installations default to Codex CLI connections; enabling the plugin does not start a model call or install a CLI. Model discovery runs only when requested. The user must install and authenticate external tools separately. API credentials use Obsidian SecretStorage; plugin data stores secret references rather than key values. HTTPS is required for remote endpoints; loopback HTTP is supported for local services.
+
+## Accounts, payment, network and privacy
+
+- The plugin itself is MIT licensed and has no payment gate, ads, author-operated service, or client-side telemetry. AI features require an external provider account, API credentials or a signed-in CLI; that service may charge for usage. Local card rendering is local, while AI-assisted card copy still uses the planning model.
+- Explicit model requests send the selected article text, instructions and necessary context to the chosen planning service. Image generation sends the design prompt and selected reference images to the chosen image service. Generated-image URLs returned by that service are downloaded. Refreshing models requests the selected service's model list. No background scan sends the whole vault.
+- Presets include OpenAI, Anthropic, Google, OpenRouter, SiliconFlow, DeepSeek, Moonshot/Kimi, Zhipu, MiniMax, Alibaba Cloud, Volcengine/Seedream and other configurable API services; only the selected connection is used. Ollama and loopback-compatible local services are supported. No article data goes to Qiaomu or Dan Koe. Provider retention and billing are governed by that provider's terms; this plugin has no independent server-side data store.
+- Codex runs as a local subprocess over stdio and uses its existing authentication and provider configuration. The plugin checks common executable locations, the user-specified binary and the shell command lookup. Planning uses a read-only sandbox in the system temporary directory; image generation uses a per-job temporary directory with writes restricted to it and network disabled in its execution sandbox. Inference still uses the CLI's provider network. These are CLI sandbox controls, not a guarantee that an external CLI has no additional access; review the CLI configuration you choose to use.
+- Image output files are read only from the job directory or the CLI's `~/.codex/generated_images` directory, after resolving symlinks and checking image signatures and size. Job directories are removed after completion. The CLI may retain its own authentication, logs or generated-image cache outside the vault.
+- Article paths, prompts, conversation, history, custom templates and session snapshots remain in `<vault>/.obsidian/plugins/banana-design/data.json`. Generated PNGs stay in the configured vault folder. Syncing these locations may also sync their private content. None is part of the source repository or Release.
+- Export uses a temporary in-memory download URL. System fonts are used for Canvas rendering; bundled preview images are embedded offline and do not cause CDN requests.
+
+## Files and compatibility
+
+The default output folder is `Banana Design` inside the vault. Settings support article, date and task variables and preview the resulting path. Existing names are never silently overwritten; new versions receive a suffix. Generated assets and source notes stay separate.
+
+The plugin ID remains `banana-design`, the command remains `open`, and the settings schema and SecretStorage references are preserved. For an existing installation, retain `data.json` and existing image folders when updating. The 0.10.1 publication build bundles the previous sibling modules and preview assets into `main.js`; no migration of user data is required. Old extra files may remain harmlessly in a manually installed folder.
+
+## Install
+
+Community directory submission is pending; do not treat a GitHub Release as approval by Obsidian.
+
+For a manual install, download **main.js**, **manifest.json** and **styles.css** from the matching [GitHub Release](https://github.com/TreyDong/banana-design/releases) and place them in `<vault>/.obsidian/plugins/banana-design/`. Enable Banana Design in Community plugins. Do not copy source folders or any other person's `data.json` into the vault.
+
+## Build and check
+
+Requires Node.js 20 or later and npm.
+
+```sh
+npm ci
+npm run check
+```
+
+Source is in `src/`, with preview assets in `assets/`. `build.mjs` creates an unminified CommonJS `main.js`, embeds both previews and third-party notices, and leaves Obsidian as a host dependency. Upload `main.js`, `manifest.json`, and `styles.css` as Release assets under a tag exactly matching the manifest version, without a `v` prefix. Compiled output and `node_modules` are excluded from source Git.
+
+Tests cover standalone three-file installation, migration, source/marker ownership, no append fallback, path traversal and symlink rejection, local API context, cancellation and key redaction. See [engineering notes](notes/README.md) for the original snapshot fingerprints and verification limits. Mock tests do not certify access to every provider or platform.
+
+## License and credits
+
+[MIT](LICENSE), with original upstream attribution retained. Banana Design includes adapted Codex bridge and provider preset portions from [Qiaomu Design](https://github.com/joeseesun/qiaomu-cover-design) by 向阳乔木 (joeseesun). Full upstream MIT terms and the precise adaptation scope are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and embedded in the distributed plugin. Local article illustration planning, anchor and layout modules were authored for Banana Design.
+
+The engraving template is a style reference; its AI-generated generic preview is not Dan Koe's artwork and implies no endorsement. Custom user assets are not bundled. This is an independent community plugin, not an official Obsidian, Qiaomu, OpenAI or Dan Koe product.
+
+## Changes
+
+### 0.10.1
+
+- Added a reproducible standard three-file release with embedded modules, previews and third-party notices.
+- Restricted remote APIs to HTTPS and limited agent-provided image paths to validated output directories.
+- Fixed template dialogs overwriting Obsidian's internal keyboard scope.
+- Removed routine startup logging and preserved existing IDs, settings, history and output paths.
+- Created a clean source repository from the user-confirmed readable vault modules; excluded private data and local backups.
