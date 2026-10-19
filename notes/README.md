@@ -20,7 +20,7 @@ Original installation, data.json, backups, articles and generated images are unt
 - Manifest: banana-design / Banana Design / 0.10.1, desktop-only, Obsidian >= 1.11.4. Existing command and settings IDs preserved.
 - Reproducible npm build; 10 focused tests pass under Node 24. API tests use only an ephemeral loopback server and synthetic article data.
 - Standard three-file bundle loads without sibling modules or preview directories. Full upstream MIT notice is embedded in main.js, which is not tracked in source Git.
-- Secret-pattern and personal-absolute-path scan of the publication allowlist found no findings. No data.json, backups, notes, generated article assets, account tokens or private repository history is published.
+- Secret-pattern and personal-absolute-path scan of the publication allowlist found no findings. No data.json, backups, vault notes, generated article assets, account tokens or private repository history is published.
 - Native QA: a fresh temporary vault with only the three standard plugin files, under Obsidian 1.14.4. Verified enabled version, settings pages, independent planning/image configuration, article selection, both embedded preview images, template selection persistence across plugin reload, local image import, actual PNG export, and cover insertion into the synthetic fixture.
 - Real export: 900 x 383 pixels, 705442 bytes, SHA-256 f18902fcad2a146c45b5211c66001f9b1a85d5c058a6ad75b503aaed8591fcef. Export and saved vault PNG are byte-identical.
 - Native QA found and fixed a pre-existing error: template modals assigned a string to the host's reserved Modal.scope field. Template purpose now uses templateScope; regression test protects host keyboard scope for cover and figure dialogs.
