@@ -360,13 +360,12 @@
 .bd-provider-gallery { max-height:52vh; overflow:auto; margin-top:14px; padding-right:5px; }
 .bd-provider-group { margin:20px 0 10px; font-size:12px; font-weight:550; color:var(--bd-muted); }
 .bd-provider-group:first-child { margin-top:4px; }
-.bd-provider-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
-.bd-settings .bd-provider-choice { display:flex; align-items:center; gap:10px; padding:13px 12px; height:auto; min-height:72px; min-width:0; color:var(--bd-ink); background:var(--bd-paper); border:1px solid var(--bd-line); border-radius:9px; box-shadow:none; text-align:left; cursor:pointer; }
+.bd-provider-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); align-items:stretch; gap:8px; }
+.bd-settings .bd-provider-choice { box-sizing:border-box; display:flex; align-items:center; justify-content:flex-start; gap:12px; width:100%; min-width:0; height:auto; min-height:64px; margin:0; padding:12px; color:var(--bd-ink); background:var(--bd-paper); border:1px solid var(--bd-line); border-radius:9px; box-shadow:none; font:inherit; line-height:1.4; text-align:left; white-space:normal; cursor:pointer; }
 .bd-settings .bd-provider-choice:hover { background:var(--bd-surface); border-color:color-mix(in srgb,var(--interactive-accent) 50%,var(--bd-line)); }
-.bd-provider-mark { display:flex; align-items:center; justify-content:center; flex-shrink:0; width:32px; height:32px; border:1px solid var(--bd-line); background:var(--bd-surface); border-radius:8px; font-size:15px; font-weight:650; }
-.bd-provider-copy { display:flex; flex-direction:column; gap:4px; min-width:0; }
-.bd-provider-name { font-size:12px; font-weight:550; line-height:1.5; }
-.bd-provider-sub { color:var(--bd-muted); font-size:10.5px; line-height:1.5; overflow-wrap:anywhere; }
+.bd-provider-mark { box-sizing:border-box; display:flex; align-items:center; justify-content:center; flex:0 0 32px; width:32px; height:32px; border:1px solid var(--bd-line); background:var(--bd-surface); border-radius:8px; font-size:15px; font-weight:650; line-height:1; }
+.bd-provider-copy { display:flex; flex-direction:column; flex:1 1 0; min-width:0; text-align:left; }
+.bd-provider-name { display:block; max-width:100%; font-size:12px; font-weight:550; line-height:1.5; white-space:normal; overflow-wrap:anywhere; }
 .bd-provider-field { display:flex; flex-direction:column; gap:7px; margin-top:17px; }
 .bd-provider-key-link { display:inline-block; color:var(--text-muted); font-size:11px; margin-top:8px; }
 .bd-provider-modal .bd-settings-message { margin-top:10px; }

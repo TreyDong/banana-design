@@ -1872,7 +1872,6 @@ class ProviderModal extends Modal {
           const mark = card.createSpan({ cls: 'bd-provider-mark', text: provider.name.replace(/Google |Anthropic /, '').slice(0, 1).toUpperCase() });
           mark.setAttribute('aria-hidden', 'true');
           const copy = card.createDiv('bd-provider-copy'); copy.createSpan({ cls: 'bd-provider-name', text: provider.name });
-          copy.createSpan({ cls: 'bd-provider-sub', text: provider.sub || (provider.keyless ? '无需 API 密钥' : 'API 密钥连接') });
           card.onclick = () => this.renderForm(provider);
         }
       }
