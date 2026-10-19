@@ -35,3 +35,17 @@ Official current instructions: https://docs.obsidian.md/plugins/releasing/submit
 The current process uses https://community.obsidian.md with an Obsidian account linked to GitHub. The obsolete obsidian-releases PR route is not used for new submissions. A source repository and a GitHub Release are preparation only, not evidence that the plugin has been accepted. Directory review results and listing status must be recorded after the actual submission.
 
 Qiaomu's MIT permission covers adapted portions; no additional claim of upstream endorsement or special directory fork approval is made. If the directory treats the adaptation as a fork requiring separate publicly verifiable approval, that feedback must be resolved before listing; no author contact is authorized by this task.
+
+## Published result — 2026-10-19
+
+- Public source: https://github.com/TreyDong/banana-design
+- Release: https://github.com/TreyDong/banana-design/releases/tag/0.10.1
+- Official public listing: https://community.obsidian.md/plugins/banana-design
+- The listing is published, shows Add to Obsidian, and reports Health: Excellent / Review: Satisfactory. The automated review for version 0.10.1 at commit `96a7436fe36368189dc96f959f82d4e7a26f818e` is Completed, with no errors. Build verification reproduced the release main.js byte-for-byte. This records the observed directory state, not a separate claim of manual endorsement.
+- Nonblocking findings: main.js exceeds 5 MB (cannot sync through Obsidian Sync Standard); external filesystem, shell and system-identity access associated with the documented CLI integration; CSS clip-path, !important and :has warnings; recommendations for artifact attestations, file enumeration and clipboard access. Dependency and obfuscation checks passed. Warnings remain public rather than being hidden by changing functionality for the checker.
+- Release assets were downloaded from the public release and matched the local package byte-for-byte:
+  - main.js — 5507343 bytes, SHA-256 `3a6734075ce5609d1d26e4de3f13451b3365d7c67ee0d28bc3918ec6872dc838`
+  - manifest.json — 345 bytes, SHA-256 `d8348c5d7fcae25e4a24956b8534d2a906a849fc6d1e1f8f74ecf98a226b8c0b`
+  - styles.css — 37720 bytes, SHA-256 `1898a31150b86da020d843ae1539eda70aea11e7d960fcbe219a97fc1b7ca845`
+- A user-approved one-time GitHub build uploaded only these three files after testing the fixed source commit and verifying expected hashes. Run: https://github.com/TreyDong/banana-design/actions/runs/39243324272 . The workflow was disabled and removed after success; no continuing release automation remains. Temporary transfer branches were removed; only main remains.
+- Original vault installation is unchanged. Publication does not itself upgrade the user's existing installation.
