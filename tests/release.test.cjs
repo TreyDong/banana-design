@@ -29,7 +29,7 @@ function load(filename, expose=false) {
     return local(id);
   };
   let source=fs.readFileSync(filename,'utf8');
-  if(expose) source+='\nmodule.exports.testHooks = {readGeneratedImage,BDView,TemplateLibraryModal,PromptTemplateEditor,imageFolder,outputRules,createOutputTask,outputImageName};';
+  if(expose) source+='\nmodule.exports.testHooks = {readGeneratedImage,BDView,TemplateLibraryModal,PromptTemplateEditor,imageFolder,outputRules,createOutputTask,outputImageName,promptTemplates,figureRecipe,renderFigureRecipe,renderTemplatePrompt};';
   vm.runInNewContext(source,{module:mod,exports:mod.exports,require:safeRequire,Buffer,URL,Blob,process,console,setTimeout,clearTimeout,AbortController,document:{getElementById:()=>null}},{filename});
   return mod.exports;
 }
@@ -118,4 +118,29 @@ test('template dialogs preserve the host keyboard scope when opened for covers o
     const editor=new hooks.PromptTemplateEditor(view,{name:'Fixture'},false,scope);
     for(const dialog of [library,editor]) { assert.equal(typeof dialog.scope,'object'); dialog.open(); assert.ok(dialog.scope.win); assert.equal(dialog.templateScope,scope); }
   }
+});
+
+
+test('new article recipes render chosen dimensions and keep cover titles out of body illustrations',()=>{
+  const {EXTRA_TEMPLATES}=require('../src/template-catalog.js');
+  assert.equal(EXTRA_TEMPLATES.length,12);
+  for(const template of EXTRA_TEMPLATES){
+    const state={platform:'custom',customW:1600,customH:640,textLevel:'title'};
+    const cover=hooks.renderTemplatePrompt(template,state,'事实与观点','A bridge connecting two libraries');
+    assert.ok(cover.includes('事实与观点'));assert.ok(cover.includes('A bridge connecting two libraries'));assert.ok(cover.includes('1600 x 640'));
+    assert.ok(!/\{(?:concept|width|height|ratio|text_rule)\}/.test(cover));
+    const figure=hooks.renderFigureRecipe(hooks.figureRecipe(template),{scene:'Two linked components',w:1200,h:800});
+    assert.ok(figure.includes('1200 x 800'));assert.ok(figure.includes('Never use the article title as a headline'));
+    assert.ok(!figure.includes('事实与观点'));assert.ok(!/\{(?:concept|width|height|ratio|text_rule)\}/.test(figure));
+    const preview=hooks.BDView.prototype.templatePreview.call({},template);
+    assert.ok(preview.startsWith('data:image/svg+xml;'));assert.ok(decodeURIComponent(preview).includes('构图示意'));
+  }
+});
+test('catalog expansion preserves user overrides, copied templates and legacy IDs without mutating settings',()=>{
+  const settings={promptTemplates:[{id:'gpt-paper-world',name:'我的纸雕',planningPrompt:'My plan',imagePrompt:'My image'},{id:'private-copy',name:'个人模板',planningPrompt:'Private plan',imagePrompt:'Private image'}]};
+  const before=JSON.stringify(settings),templates=hooks.promptTemplates(settings);
+  assert.equal(templates.length,16);assert.equal(new Set(templates.map(t=>t.id)).size,16);
+  assert.equal(templates.find(t=>t.id==='gpt-paper-world').imagePrompt,'My image');
+  for(const id of ['blank','dan-koe','neon-card','private-copy'])assert.ok(templates.some(t=>t.id===id));
+  assert.equal(JSON.stringify(settings),before);
 });

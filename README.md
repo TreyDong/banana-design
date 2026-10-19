@@ -63,6 +63,12 @@ Tests cover standalone three-file installation, migration, source/marker ownersh
 
 The engraving template is a style reference; its AI-generated generic preview is not Dan Koe's artwork and implies no endorsement. Custom user assets are not bundled. This is an independent community plugin, not an official Obsidian, Qiaomu, OpenAI or Dan Koe product.
 
+## Expanded local template catalog
+
+The local source adds 12 article-led templates to the existing 3: conceptual typography, layered paper world, watercolor notes, knowledge flow, two-way comparison, scientific scales, exploded structure, isometric room, cinematic narrative, documentary lens, ink landscape and editorial still life. Each supports both covers and body illustrations, independent dimensions, editable prompts and saved custom overrides. The source link appears in the template library when the template is selected. Offline previews are labeled **layout studies**, not generated-output samples.
+
+These are informed by a popular GPT Image repository's documented categories and production rules. Repository stars are not per-template use counts. No runtime connection to the reference repository or fixed image provider is added. See [catalog sources and scope](notes/template-catalog.md). This local addition has not been published as a new community Release.
+
 ## Changes
 
 ### 0.10.1

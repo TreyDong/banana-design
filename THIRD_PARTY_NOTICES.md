@@ -37,3 +37,29 @@ Both previews are embedded at build time. There are no bundled third-party fonts
 Obsidian supplies its API and Lucide icon rendering; Obsidian is not redistributed. Codex CLI is a user-installed external dependency and is not installed, updated or distributed by this plugin. esbuild is an MIT-licensed build-time dependency, pinned by package-lock.json; its runtime is not included in the plugin. No Fabric, React, Qiaomu templates, private account configuration, or external service SDK is bundled.
 
 The Qiaomu notice above is also prepended verbatim to the distributed main.js so the standard three-file installer preserves it.
+
+## Awesome GPT Image template research
+
+The additional article-led recipes in `src/template-catalog.js` use the category structures and production constraints documented by freestylefly in [awesome-gpt-image-2](https://github.com/freestylefly/awesome-gpt-image-2/blob/63e6176fa01be51c000108dacd72716d3e46784b/docs/templates.md), inspected 2026-10-19. The repository is MIT licensed; its notice follows. The recipes were rewritten for article evidence, independent output ratios and separate cover/body rules. Previews are original geometric layout studies, not upstream images or actual generated outputs. No community case image, logo, person photograph or verbatim third-party case prompt is redistributed. The source repository separately disclaims ownership of third-party community cases; its MIT does not establish rights to those third-party works. See notes/template-catalog.md for selection and provenance.
+
+MIT License
+
+Copyright (c) 2026 freestylefly
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
