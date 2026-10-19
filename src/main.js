@@ -364,6 +364,7 @@ const MODULES = {
 function byId(list, id) { return list.find((x) => x.id === id) || list[0]; }
 
 /* A recipe plans a new subject from each article, then supplies stable image rules. */
+const { EXTRA_TEMPLATES } = require('./template-catalog');
 const PROMPT_TEMPLATES = [{
   id: 'dan-koe', name: 'Dan Koe · 黑白蚀刻', previewAsset: 'dan-koe', titleTreatment: 'scene-integrated',
   figurePlanningPrompt: '用黑白木刻与铜版蚀刻的视觉语言设计正文配图。根据每处正文观点，选择具体人物动作、环境关系或清晰的结构与对比，统一细密刻线、排线与明暗层次。场景图有空间深度，说明图优先可读性。只使用帮助理解当前段落的少量短标签，不放文章标题，不照搬封面的中央大字布局。',
@@ -384,7 +385,7 @@ const PROMPT_TEMPLATES = [{
   planningPrompt: '阅读文章，根据正文观点与用户本次要求构思当前单张封面。不预设画风、配色、主体或固定布局；用户指定的风格与构图优先。用一个明确、有正文依据的视觉场景表达观点，英文 scene 包含可绘制的主体、构图和本次选择的视觉处理，不包含实际标题文字。',
   imagePrompt: 'Create a polished article cover from this creative brief.\nCreative brief: {concept}\nDo not import a preset engraving style, neon palette, fixed subject or stock layout. Follow the user request and the creative brief.\nCanvas: {width} x {height} px, aspect ratio {ratio}. Compose for this exact canvas with safe margins.\n{text_rule}\nNo logos, watermarks or unrelated decoration.',
   defaults: { textLevel: 'title' },
-}];
+}, ...EXTRA_TEMPLATES];
 function promptTemplates(settings) {
   const overrides = Array.isArray(settings.promptTemplates) ? settings.promptTemplates.filter(t => t && typeof t.id === 'string' && typeof t.name === 'string' && typeof t.planningPrompt === 'string' && typeof t.imagePrompt === 'string') : [];
   return [...PROMPT_TEMPLATES.map(t => ({ ...t, ...overrides.find(o => o.id === t.id) })), ...overrides.filter(t => !PROMPT_TEMPLATES.some(b => b.id === t.id))];
@@ -446,6 +447,8 @@ class TemplateLibraryModal extends Modal {
       else if (preview) card.createEl('img', { attr: { src: preview, alt: template.name + '模板预览', loading: 'lazy' } });
       else { const empty = card.createDiv('bd-library-no-preview'); setIcon(empty, 'image'); empty.createSpan({ text: '暂无预览' }); }
       card.createSpan({ cls: 'bd-library-name', text: template.name });
+      if (template.description) card.createSpan({ cls: 'bd-hint', text: template.description });
+      if (template.sourceUrl) card.title = template.sourceLabel + '\n' + template.sourceUrl;
       card.onclick = async () => {
         if (this.view.busy || this.view.coverChatBusy) return;
         if (this.view.template(this.templateScope)?.id !== template.id) this.view.selectTemplate(template.id, this.templateScope);
@@ -456,6 +459,7 @@ class TemplateLibraryModal extends Modal {
     const footer = this.contentEl.createDiv('bd-library-footer');
     const manage = footer.createEl('details', { cls: 'bd-library-manage' }); manage.createEl('summary', { text: '管理模板' });
     const current = this.view.template(this.templateScope);
+    if (current?.sourceUrl) footer.createEl('a', {text: current.sourceLabel + ' · 查看来源', attr:{href:current.sourceUrl,target:'_blank',rel:'noopener noreferrer'}});
     const seed = current || { name: '我的模板', planningPrompt: '从文章提炼核心观点，设计一个具体物件和视觉隐喻，用英文描述主体与构图。', imagePrompt: 'Create an editorial article cover.\nScene: {concept}\nCanvas: {width} x {height} px.\n{text_rule}', defaults: { type: 'metaphor', palette: 'mono', textLevel: 'title' } };
     if (current) { const edit = manage.createEl('button', { text: '编辑当前模板' }); edit.onclick = () => { this.close(); new PromptTemplateEditor(this.view, current, false, this.templateScope).open(); }; }
     const copy = manage.createEl('button', { text: current ? '另存副本' : '新建模板' }); copy.onclick = () => { this.close(); new PromptTemplateEditor(this.view, seed, true, this.templateScope).open(); };
@@ -881,6 +885,7 @@ class BDView extends ItemView {
     const asset = template.previewAsset;
     if (asset === 'dan-koe') return require('../assets/dan-koe.png');
     if (asset === 'neon-card') return require('../assets/neon-card.svg');
+    if (template.previewSvg) return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(template.previewSvg);
     return '';
   }
   openTemplateLibrary(scope = 'cover') { if (!this.busy && !this.coverChatBusy && !this.insertingFigures && !(scope === 'figure' && this.figureSizeLocked())) new TemplateLibraryModal(this, scope).open(); }
