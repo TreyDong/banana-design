@@ -78,3 +78,9 @@ These are informed by a popular GPT Image repository's documented categories and
 - Fixed template dialogs overwriting Obsidian's internal keyboard scope.
 - Removed routine startup logging and preserved existing IDs, settings, history and output paths.
 - Created a clean source repository from the user-confirmed readable vault modules; excluded private data and local backups.
+
+## Cover samples and illustration recipes
+
+The cover library prioritizes the existing blank, engraving and neon layouts plus three generated-cover directions: conceptual paper typography, cinematic spatial storytelling and tactile metaphorical still life. Their offline previews are actual generated covers, using the same example article title. The scene is planned again from each selected article; the sample object is not imposed on every future cover.
+
+Process, comparison, scale and other diagram recipes remain available in the article-illustration library. Existing active choices and saved user customizations remain accessible. A sample demonstrates one generated result, not a guarantee that every model produces an identical image. Source prompts, sample evidence and validation status are in [the template notes](notes/template-catalog.md).

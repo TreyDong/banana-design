@@ -372,3 +372,7 @@
 .bd-provider-modal .bd-settings-footer { position:sticky; bottom:0; background:var(--bd-paper); margin-top:8px; padding:14px 0 4px; }
 .bd-model-manager .bd-service-heading:first-child { margin-top:4px; }
 @media (max-width:480px) { .bd-provider-grid { grid-template-columns:1fr; }.bd-service-title { gap:5px; }.bd-service-card { padding-right:4px; }.bd-service-select { padding-left:5px; }.bd-service-actions { gap:0; } }
+
+/* Cover samples retain their complete wide composition and readable headline. */
+.bd-cover-template-library .bd-library-grid { grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
+.bd-cover-template-library .bd-library-card img { height:auto; aspect-ratio:2.35 / 1; object-fit:contain; }

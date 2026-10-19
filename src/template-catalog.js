@@ -1,5 +1,5 @@
 // Article-led recipes informed by the cited public template categories.
-// See notes/template-catalog.md and THIRD_PARTY_NOTICES.md. All previews are original layout diagrams.
+// See notes/template-catalog.md and THIRD_PARTY_NOTICES.md. Body previews are layout diagrams; validated cover directions use generated samples.
 const SOURCE_BASE = "https://github.com/freestylefly/awesome-gpt-image-2/blob/63e6176fa01be51c000108dacd72716d3e46784b/docs/templates.md#tpl-";
 const RECIPES = [
   [
@@ -164,6 +164,23 @@ function previewSvg(kind, bg, ink, accent) {
   };
   return `<svg xmlns="http://www.w3.org/2000/svg" width="360" height="230" viewBox="0 0 360 230"><rect width="360" height="230" fill="${bg}"/>${shapes[kind]}<rect y="210" width="360" height="20" fill="${bg}"/><text x="12" y="224" font-family="sans-serif" font-size="10" fill="${ink}">LAYOUT STUDY / 构图示意 · 非生成效果</text></svg>`;
 }
+const COVER_DIRECTIONS = {
+  'gpt-concept-type': {
+    name: '概念字体 · 纸艺封面', description: '大标题、真实纸艺与精确留白', preview: 'gpt-concept-type',
+    planning: '从文章提取一个能由物件变化解释的核心矛盾，策划一个具体、可绘制的纸艺或印刷装置。写清楚主体材质、哪部分穿插标题、视觉焦点和光线。不要把所有文章都变成同一个纸块；主体随文章观点变化。',
+    art: 'Art-directed conceptual typography with a tactile paper or print sculpture. Warm ivory, deep near-black typography and one restrained vermilion accent. Convincing folds, cut edges, thin layered occlusion and grazing studio light. A single meaningful physical transformation expresses the supplied article idea. Let forms pass behind or through a controlled part of the typographic composition without obscuring any character. Make the exact requested headline the main compositional mass, with excellent spacing, semantic line breaks and intentional asymmetrical balance. Fine material detail and restrained print grain. No word-art effects, icon collection, basic geometric placeholder, sticker collage or generic gradient.'
+  },
+  'gpt-cinematic-story': {
+    name: '电影光影 · 空间叙事', description: '人物与环境发生关系，标题融入光影', preview: 'gpt-cinematic-story',
+    planning: '将文章的一个观点变成正在发生的具体事件，明确人物在观察或改变什么，环境如何参与。给出前景、中景动作和远景，以及一个主光源；为标题规划安静、完整的明暗区域。人物、环境与行动随文章变化，不固定成展厅或某件雕塑。',
+    art: 'A cinematic editorial scene with a specific relationship among protagonist, meaningful object and environment. Deep foreground shadow, convincing middle-ground action and a readable distant space; strong perspective and finely observed tactile material. Controlled amber directional light and charcoal shadows, coherent atmospheric depth, premium film-still quality. Integrate the complete headline prominently into a calm shadow plane with elegant warm-white display typography, legible at thumbnail size. Adapt placement to the scene rather than attaching a tiny corner caption. No cyberpunk neon, HUD, diagram boxes, sales cards or floating abstract props.'
+  },
+  'gpt-object-editorial': {
+    name: '质感静物 · 物件隐喻', description: '一个有意义的物件，材质与文字共同表达', preview: 'gpt-object-editorial',
+    planning: '从文章核心观点选择一个可以解释的物件及其变化，写明粗糙与精细、内外或前后的关系为何有正文依据。只保留一个主体，说明材质、可见结构、接触阴影和标题留白。不要每次都使用石膏方块，也不要添加正文没有的品牌或卖点。',
+    art: 'Premium metaphorical still-life photography of one intriguing, physically coherent object that carries the supplied article idea. Macro-level tactile detail, believable edge thickness, fine tool marks, contrasting rough and refined materials, sculptural side light and a soft grounded shadow. Warm stone, graphite and a restrained copper accent. Balance the object against a large confident complete headline with excellent spacing and purposeful hierarchy, like an independent design magazine feature. Choose the object from the article rather than repeating the sample object. No collection of symbols, infographic, flat icon, sales dashboard, generic stock product layout or decorative badge.'
+  }
+};
 const ARTICLE_RULES = '从当前文章提取一个有依据的观点和可绘制主体。尊重用户指定画幅，不固定为竖版海报。不得编造数字、收益、评价、引语或文章未支持的事实；资料不足时少放标签。每次只策划一张，多个候选改变核心场景而不只换颜色。';
 const EXTRA_TEMPLATES = RECIPES.map(([id,name,description,category,kind,bg,ink,accent,planning,visual]) => ({
   id: 'gpt-'+id, name, description, titleTreatment: 'adaptive',
@@ -174,5 +191,13 @@ const EXTRA_TEMPLATES = RECIPES.map(([id,name,description,category,kind,bg,ink,a
   figurePlanningPrompt: ARTICLE_RULES+planning+'为当前正文段落解释关系，不复制封面版式，不放文章标题。短标签只能来自该段落，除非用户要求，不加入其他文字。',
   figurePrompt: 'Create one article-body illustration explaining the supplied paragraph.\nScene: {concept}\n'+visual+'\nCanvas: {width} x {height} px, aspect ratio {ratio}, with 6 percent safe margins.\n{text_rule}\nNever render the article headline or carry over a fixed cover layout. For the typography style, express the concept with shapes and objects when short labels are not requested. No invented data, quotes, numerical scales, logos or watermarks.',
   defaults: {textLevel: 'title'}
-}));
+})).map(template => {
+  const direction = COVER_DIRECTIONS[template.id];
+  if (!direction) return { ...template, coverReady: false };
+  return { ...template, name: direction.name, description: direction.description,
+    coverReady: true, coverPreviewAsset: direction.preview, coverPreviewKind: 'generated-sample',
+    planningPrompt: ARTICLE_RULES + direction.planning + '封面只使用用户完整标题，不添加虚构副标题。用英文给出可绘制的场景。',
+    imagePrompt: 'Create one finished premium editorial article cover.\nScene: {concept}\n' + direction.art + '\nCanvas: {width} x {height} px, aspect ratio {ratio}. Compose the entire cover specifically for this ratio with 6 percent safe margins; never crop a taller poster.\n{text_rule}\nNo added bylines, unsupported subtitles, watermarks, signatures, fake metrics, brands, contact sheets or reference-site UI.'
+  };
+});
 module.exports = { EXTRA_TEMPLATES };
