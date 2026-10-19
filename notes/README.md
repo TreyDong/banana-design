@@ -49,3 +49,7 @@ Qiaomu's MIT permission covers adapted portions; no additional claim of upstream
   - styles.css — 37720 bytes, SHA-256 `1898a31150b86da020d843ae1539eda70aea11e7d960fcbe219a97fc1b7ca845`
 - A user-approved one-time GitHub build uploaded only these three files after testing the fixed source commit and verifying expected hashes. Run: https://github.com/TreyDong/banana-design/actions/runs/39243324272 . The workflow was disabled and removed after success; no continuing release automation remains. Temporary transfer branches were removed; only main remains.
 - Original vault installation is unchanged. Publication does not itself upgrade the user's existing installation.
+
+## Provider gallery layout — 2026-10-19
+
+Removed provider subtitles from the gallery; names and fixed square marks align to the left. Cards use full-width box sizing, wrapping names and an auto-fitting grid based on available dialog width. Updated only runtime/styles in the local installation after preserving a rollback snapshot. Native Obsidian inspection confirms names-only cards, aligned icons and no overflow at the observed desktop width. Build and 12 existing regression checks pass; data.json is byte-identical after reloading Design. No provider or credential setting changed.
