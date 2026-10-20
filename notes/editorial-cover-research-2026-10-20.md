@@ -212,3 +212,28 @@ The right column is a quieter lead-in, about 60% the size of the other two colum
 Placement: left half of the sea; main columns around x=12% and x=24% of canvas, small lead-in around x=35%. Shared top optical anchor at about 17% canvas height. Main character height approximately 7–8% canvas height; longest column fits comfortably above 86% canvas height. Total type uses only about the left third of the canvas, not half the image. Keep comfortable edge margins, no image occlusion, no separate text panel.
 The effect must feel deliberate, calm, cultured, like a contemporary Chinese literary jacket. No title-sized equal-weight preamble, default office-document appearance, underlines, border, artificial texture on letters, publisher name, cover badge, logo, extra subtitle, date, byline or watermark. Output one complete edited cover, not a comparison or mockup.
 ```
+
+## C：进一步隔离字体和排列变量
+
+用户继续判断问题可能在字体或排列。本次保持同一底图和完整标题，使用内置 imagegen 的参考图编辑模式制作 [三层横排方向稿](../assets/typography-hierarchy-study.webp)：小引题、中等上下文、较大的主要表达，采用现代无衬线气质，减少上一版横排的整体粗重，避免把竖排视为通用解法。
+
+已检查标题字符和阅读顺序，未新增或删改文案。模型输出对字号、字重和具体字体仍是近似执行，不能声称实际嵌入了 PingFang 或 Noto 字体文件。该图仅供用户判断字体及层级方向，不代表用户已认可定稿，不替换任何内置预览、个人安装或公开版本。本轮仅新增方向稿与本记录，无运行时代码修改。
+
+### C 实际编辑提示词
+
+```text
+Use case: text-localization.
+Input image is the edit target. Make a TYPOGRAPHY-ONLY revision to the existing blue seaside painting cover.
+Invariant: preserve the entire illustration, person, clothing, pose, framed paper, coast, houses, lighting, color, perspective, scene scale and painted brushwork. Remove all old text and restore the original painting behind it. Keep the same landscape 2.35:1 framing. Do not regenerate a new scene.
+The user likes the image and says the issue is the FONT OR ARRANGEMENT. Avoid the original big default Songti block, and avoid the previous alternatives of very heavy marketing black type or vertical Chinese text. This version should have the restraint and precision of an art-exhibition editorial cover.
+Use one consistent family of refined MODERN HUMANIST CHINESE SANS-SERIF, medium weight, in the spirit of PingFang SC Medium or a finely spaced contemporary sans: no serifs, no calligraphy, no ultra-heavy Heiti, no compressed novelty face, no hairline. Latin AI must harmonize in width, x-height and weight with the Chinese, not appear in Times New Roman or as a separate enormous logo.
+The entire exact title is:
+审美不够，怎么用 AI 做出更有质感的产品？
+Preserve all words and punctuation exactly, in normal horizontal reading order. Set exactly these three semantic lines, with three CLEAR sizes:
+Line 1, small quiet lead-in: 审美不够，
+Line 2, intermediate context: 怎么用 AI 做出
+Line 3, primary focal phrase: 更有质感的产品？
+For a canvas around 1920×818, use approximate character heights 36px, 58px and 84px respectively. Medium weight for all; size and space create the hierarchy, not huge differences in boldness. Keep AI within the second line and optically the same height as its Chinese neighbors. At equivalent canvas sizes scale proportionally.
+Left align all three to one optical edge around x=7% of canvas. Place the complete group in the calm left water region, beginning around y=32% of canvas. Leave about 30px between first and second line and 22px between second and third line. The whole type group should occupy only about 43% canvas width and 28–31% canvas height, distinctly smaller and quieter than the original. Main phrase is the only large line. Use measured slightly open letter spacing and naturally balanced punctuation; no arbitrary spaces within Chinese words.
+Color one warm ivory, clean edged, with ample blue sea showing around and between the lines. Keep the person and sunset unobstructed. No separate caption box, colored keyword, underline, gradient letters, stroke outline, drop shadow, badge, extra decorative words, date, logo, fake byline, border, watermark, side-by-side or mockup. Deliver one complete cover.
+```
