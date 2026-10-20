@@ -31,7 +31,7 @@ function load(filename, expose=false) {
     return local(id);
   };
   let source=fs.readFileSync(filename,'utf8');
-  if(expose) source+='\nmodule.exports.testHooks = {readGeneratedImage,BDView,TemplateLibraryModal,PromptTemplateEditor,imageFolder,outputRules,createOutputTask,outputImageName,promptTemplates,templateChoices,figureRecipe,renderFigureRecipe,renderTemplatePrompt,templateLabel,PLATFORMS,FIGURE_SIZES,PALETTES,RENDERINGS,MODULES};';
+  if(expose) source+='\nmodule.exports.testHooks = {readGeneratedImage,BDView,TemplateLibraryModal,TemplateManagerModal,PromptTemplateEditor,updateTemplateSettings,imageFolder,outputRules,createOutputTask,outputImageName,promptTemplates,templateChoices,figureRecipe,renderFigureRecipe,renderTemplatePrompt,templateLabel,PLATFORMS,FIGURE_SIZES,PALETTES,RENDERINGS,MODULES};';
   vm.runInNewContext(source,{module:mod,exports:mod.exports,require:safeRequire,Buffer,URL,Blob,process,console,setTimeout,clearTimeout,AbortController,document:{getElementById:()=>null}},{filename});
   return mod.exports;
 }
@@ -131,7 +131,7 @@ test('template dialogs preserve the host keyboard scope when opened for covers o
 
 test('new article recipes render chosen dimensions and keep cover titles out of body illustrations',()=>{
   const {EXTRA_TEMPLATES}=require('../src/templates/catalog.js');
-  assert.equal(EXTRA_TEMPLATES.length,15);
+  assert.equal(EXTRA_TEMPLATES.length,21);
   for(const template of EXTRA_TEMPLATES){
     const state={platform:'custom',customW:1600,customH:640,textLevel:'title'};
     const cover=hooks.renderTemplatePrompt(template,state,'事实与观点','A bridge connecting two libraries');
@@ -144,7 +144,8 @@ test('new article recipes render chosen dimensions and keep cover titles out of 
     assert.ok(figure.includes('1200 x 800'));assert.ok(figure.includes('Never use the article title as a headline'));
     assert.ok(!figure.includes('事实与观点'));assert.ok(!/\{(?:concept|width|height|ratio|text_rule)\}/.test(figure));
     const preview=hooks.BDView.prototype.templatePreview.call({},template);
-    if(template.coverReady){assert.ok(preview.startsWith('data:image/webp;'));assert.equal(template.coverPreviewKind,'generated-sample');}
+    if(template.coverPreviewKind==='typeset-example'){assert.ok(preview.startsWith('data:image/svg+xml;'));assert.ok(decodeURIComponent(preview).includes('<svg'));}
+    else if(template.coverReady){assert.ok(preview.startsWith('data:image/webp;'));assert.equal(template.coverPreviewKind,'generated-sample');}
     else {assert.ok(preview.startsWith('data:image/svg+xml;'));assert.ok(decodeURIComponent(preview).includes('构图示意'));}
     const bodyPreview=hooks.BDView.prototype.templatePreview.call({},template,'figure');assert.ok(bodyPreview.startsWith('data:image/svg+xml;'));
   }
@@ -152,7 +153,7 @@ test('new article recipes render chosen dimensions and keep cover titles out of 
 test('catalog expansion preserves user overrides, copied templates and legacy IDs without mutating settings',()=>{
   const settings={promptTemplates:[{id:'gpt-paper-world',name:'我的纸雕',planningPrompt:'My plan',imagePrompt:'My image'},{id:'private-copy',name:'个人模板',planningPrompt:'Private plan',imagePrompt:'Private image'}]};
   const before=JSON.stringify(settings),templates=hooks.promptTemplates(settings);
-  assert.equal(templates.length,19);assert.equal(new Set(templates.map(t=>t.id)).size,19);
+  assert.equal(templates.length,25);assert.equal(new Set(templates.map(t=>t.id)).size,25);
   assert.equal(templates.find(t=>t.id==='gpt-paper-world').imagePrompt,'My image');
   for(const id of ['blank','dan-koe','neon-card','private-copy'])assert.ok(templates.some(t=>t.id===id));
   assert.equal(JSON.stringify(settings),before);
@@ -160,10 +161,10 @@ test('catalog expansion preserves user overrides, copied templates and legacy ID
 
 test('cover library separates validated covers from body diagrams while preserving active and custom choices',()=>{
   const settings={promptTemplates:[]};
-  const covers=hooks.templateChoices(settings,'cover');assert.equal(covers.length,10);
+  const covers=hooks.templateChoices(settings,'cover');assert.equal(covers.length,16);
   for(const id of ['gpt-concept-type','gpt-cinematic-story','gpt-object-editorial','gpt-human-narrative','gpt-opinion-collage','gpt-documentary-lens','gpt-literary-painting','dan-koe','neon-card','blank'])assert.ok(covers.some(t=>t.id===id));
   assert.ok(!covers.some(t=>t.id==='gpt-knowledge-flow'));
-  assert.equal(hooks.templateChoices(settings,'figure').length,18);
+  assert.equal(hooks.templateChoices(settings,'figure').length,24);
   assert.ok(hooks.templateChoices(settings,'cover','gpt-knowledge-flow').some(t=>t.id==='gpt-knowledge-flow'));
   const custom={promptTemplates:[{id:'gpt-paper-world',name:'我的纸雕',planningPrompt:'My plan',imagePrompt:'My image'}]};
   assert.ok(hooks.templateChoices(custom,'cover').some(t=>t.id==='gpt-paper-world'));
@@ -206,4 +207,60 @@ test('English labels cover built-in options while custom text, prompts and outpu
   assert.equal(i18n.imageCount(1),'1 image');assert.equal(i18n.imageCount(2),'2 images');
   assert.equal(i18n.t('未知的个人名称'),'未知的个人名称');assert.equal(i18n.t('视觉提示词需包含 {concept}，让文章构思进入画面'),'Include {concept} in the image prompt to use the article concept');
   language='zh';assert.equal(i18n.t('构思与规划'),'构思与规划');assert.equal(i18n.imageCount(1),'1 张');assert.equal(i18n.resolveLanguage('auto','fr'),'en');assert.equal(i18n.resolveLanguage('zh','en-US'),'zh');
+});
+
+
+test('hidden templates preserve active choices and blank remains first in both libraries',()=>{
+  const settings={promptTemplates:[],hiddenPromptTemplates:['blank','editorial-list','dan-koe']};
+  for(const scope of ['cover','figure']) {
+    const ids=hooks.templateChoices(settings,scope).map(item=>item.id);
+    assert.equal(ids[0],'blank');assert.ok(!ids.includes('editorial-list'));assert.ok(!ids.includes('dan-koe'));
+    assert.ok(hooks.templateChoices(settings,scope,'editorial-list').some(item=>item.id==='editorial-list'));
+  }
+  assert.ok(hooks.promptTemplates(settings).some(item=>item.id==='editorial-list'));
+});
+test('template management saves preferences atomically and rolls back a failed write',async()=>{
+  const custom={id:'custom-fixture',name:'My style',planningPrompt:'Original plan',imagePrompt:'Original {concept}'};
+  const plugin={settings:{promptTemplates:[custom],deletedPromptTemplates:[],sessions:{'Fixture.md':{state:{templateId:'blank'}}},modelServices:{textId:'private-connection'}},async saveSettings(){this.saved=JSON.parse(JSON.stringify(this.settings));}};
+  const preserved=JSON.stringify({sessions:plugin.settings.sessions,modelServices:plugin.settings.modelServices});
+  await hooks.updateTemplateSettings(plugin,data=>{data.hiddenPromptTemplates=['editorial-list'];});
+  assert.deepEqual(plugin.saved.hiddenPromptTemplates,['editorial-list']);
+  const before=JSON.stringify(plugin.settings);
+  plugin.saveSettings=async()=>{throw new Error('fixture write failure');};
+  await assert.rejects(hooks.updateTemplateSettings(plugin,data=>{data.promptTemplates=[];data.deletedPromptTemplates=[custom];data.hiddenPromptTemplates=[];}),/fixture write failure/);
+  assert.equal(JSON.stringify(plugin.settings),before);
+  assert.equal(JSON.stringify({sessions:plugin.settings.sessions,modelServices:plugin.settings.modelServices}),preserved);
+});
+
+test('management controls hide, show, delete and restore; saving a copy keeps the active template',async()=>{
+  i18n.configureLocale(()=>'zh');
+  class Element {
+    constructor(tag='div',options={}){this.tag=tag;this.children=[];this.value='';this.options=options;this.text=options.text||'';this.disabled=false;}
+    createEl(tag,options={}){const el=new Element(tag,options);if(options.value)el.value=options.value;this.children.push(el);if(this.tag==='select'&&this.children.length===1)this.value=options.value;return el;}
+    createDiv(options={}){return this.createEl('div',typeof options==='string'?{cls:options}:options);}
+    createSpan(options={}){return this.createEl('span',options);}
+    setText(text){this.text=text;} empty(){this.children=[];} addClass(){} toggleClass(){}
+    all(){return [this,...this.children.flatMap(child=>child.all())];}
+  }
+  const custom={id:'custom-fixture',name:'Fixture',description:'Keep this description',planningPrompt:'Original plan',imagePrompt:'Original {concept}'};
+  const plugin={settings:{promptTemplates:[custom],hiddenPromptTemplates:[],deletedPromptTemplates:[],modelServices:{textId:'untouched'}},async saveSettings(){this.saved=JSON.parse(JSON.stringify(this.settings));}};
+  let active='blank',returned=0;
+  const view={app:{},plugin,template(){return hooks.promptTemplates(plugin.settings).find(item=>item.id===active);},templateLabel(template,field='name'){return hooks.templateLabel(template,plugin.settings,field);},selectTemplate(id){active=id;},remember(){},renderBody(){}};
+  const mount=modal=>{modal.titleEl=new Element();modal.modalEl=new Element();modal.contentEl=new Element();modal.close=()=>modal.onClose();modal.onOpen();return modal;};
+  const manager=mount(new hooks.TemplateManagerModal(view));
+  const action=label=>manager.contentEl.all().find(el=>el.options.attr?.['aria-label']===label);
+  assert.equal(action('隐藏模板: 空白模板').disabled,true);
+  await action('隐藏模板: 清单榜单 · 数字焦点').onclick();assert.ok(plugin.saved.hiddenPromptTemplates.includes('editorial-list'));
+  manager.filter.value='hidden';manager.filter.onchange();assert.equal(manager.list.children.length,1);
+  await action('显示模板: 清单榜单 · 数字焦点').onclick();assert.equal(manager.list.children.length,1);assert.equal(manager.list.children[0].text,'没有匹配的模板');
+  manager.filter.value='custom';manager.filter.onchange();active='custom-fixture';await action('删除模板: Fixture').onclick();assert.equal(plugin.settings.promptTemplates.length,0);assert.equal(active,'blank');
+  await manager.restore.onclick();assert.equal(plugin.settings.promptTemplates[0].description,'Keep this description');
+  const editor=mount(new hooks.PromptTemplateEditor(view,custom,true,'cover',()=>returned++));
+  const field=label=>editor.contentEl.all().find(el=>el.options.attr?.['aria-label']===label);
+  field('模板名称').value='Copied style';field('模板说明').value='Updated description';
+  await editor.contentEl.all().find(el=>el.tag==='button'&&el.text==='保存模板').onclick();
+  const saved=plugin.settings.promptTemplates.find(item=>item.name==='Copied style');
+  assert.equal(saved.description,'Updated description');assert.equal(saved.imagePrompt,'Original {concept}');
+  assert.equal(custom.name,'Fixture');assert.equal(custom.description,'Keep this description');
+  assert.equal(active,'blank');assert.equal(returned,1);assert.equal(plugin.settings.modelServices.textId,'untouched');
 });

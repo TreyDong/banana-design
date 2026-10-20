@@ -85,11 +85,18 @@ The engraving template is a style reference; its AI-generated generic preview is
 
 ## Template catalog
 
-The catalog includes 18 templates. They cover conceptual typography, paper, watercolor, diagrams, cinematic scenes, lifestyle photography, ink, still life, human narrative, opinion collage and literary painting. Covers and body illustrations have separate prompts, independent dimensions and saved custom overrides. The source link appears in the template library when selected. Body previews are labeled **layout studies**; the seven sampled cover directions use actual generated-cover previews.
+The catalog includes 24 templates, with 16 cover choices and 24 illustration styles. They cover conceptual typography, paper, watercolor, diagrams, cinematic scenes, lifestyle photography, ink, still life, human narrative, opinion collage and literary painting. Covers and body illustrations have separate prompts, independent dimensions and saved custom overrides. The source link appears in the template library when selected. Body previews are labeled **layout studies**; the seven sampled cover directions use actual generated-cover previews.
 
 The original category recipes are informed by a popular GPT Image repository's documented categories and production rules. The four newer editorial directions use independently written rules informed by real publication-design references. Repository stars and article views are not per-template use counts or proof of a cover's causal effect. No runtime reference-site request or fixed image provider is added. See [template sources and attribution](THIRD_PARTY_NOTICES.md#awesome-gpt-image-template-research) and the source links in [the catalog](src/templates/catalog.js). The expanded catalog is packaged in version 0.10.2.
 
 ## Changes
+
+### Unreleased
+
+- Expanded covers from 10 to 16 choices with six original typography directions: resource list, Swiss grid, magazine headline, vintage newsprint, duotone screenprint and archive papers. Each uses a distinct fictional sample title and is labeled **Typography example**, separate from the seven generated-image previews. Runtime prompts use the selected article, never the sample copy or numbers.
+- Replaced the current-template dropdown at the bottom with a searchable management list. Edit names, descriptions and prompts; create or copy templates; hide/show styles; reset built-in edits; delete and restore custom templates. Hidden active templates remain usable, and the blank template stays first. Management edits preserve the active selection.
+- Fixed long Chinese and English descriptions wrapping inside cards, kept search and management controls visible above the scrolling grid, and added save-failure rollback for template preferences.
+
 
 ### 0.10.2 — 2026-10-20
 
