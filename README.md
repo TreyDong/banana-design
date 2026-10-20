@@ -115,6 +115,18 @@ The original category recipes are informed by a popular GPT Image repository's d
 
 ## Cover samples and illustration recipes
 
-The cover library includes the existing blank, engraving and neon layouts plus seven generated-cover directions: conceptual paper typography, cinematic spatial storytelling, tactile metaphorical still life, human narrative, opinion collage, quiet lifestyle photography and literary painting. Their offline previews are actual generated covers, using the same example article title. Each selected article supplies a new scene; the sample person, object and setting are not imposed on later covers. The four newer directions also support title-free images; the selected text rule takes priority over typography guidance.
+The cover library includes the existing blank, engraving and neon layouts plus seven generated-cover directions: conceptual paper typography, cinematic spatial storytelling, tactile metaphorical still life, human narrative, opinion collage, quiet lifestyle photography and literary painting. Their offline previews are actual generated covers using distinct demonstration topics suited to each style. These fictional examples show possible applications; they are not user articles or fixed prompts for later covers. Each selected article supplies its own title, subject and scene. The four newer directions also support title-free images; the selected text rule takes priority over typography guidance.
+
+| Direction | Demonstration title | Intended example |
+| --- | --- | --- |
+| Conceptual paper typography | 审美不够，怎么用 AI 做出更有质感的产品？ | Product and design |
+| Cinematic storytelling | 换一条路，重新出发 | Change and personal choices |
+| Tactile still life | 买得更少，用得更久 | Thoughtful consumption and repair |
+| Human narrative | 下班以后，生活才刚刚开始 | Everyday experience beyond work |
+| Opinion collage | 信息越多，判断越难？ | Commentary and information judgment |
+| Lifestyle photography | 把周末，还给真实的生活 | Daily life and weekend observation |
+| Literary painting | 在不确定里，慢慢向前 | Personal essays and reflection |
+
+The preview correction replaces six comparison images from 0.10.2, retaining one product/design example and the established typography direction. Original generation briefs and reference versions are recorded in [preview-samples.json](assets/preview-samples.json). It changes demonstration images, not runtime template instructions or user content.
 
 Process, comparison, scale and other diagram recipes remain available in the article-illustration library. Existing active choices and saved user customizations remain accessible. A sample demonstrates one generated result, not a guarantee that every model produces an identical image. Current reusable prompts are in [the catalog](src/templates/catalog.js), with offline samples in `assets/` and regression coverage in `tests/`.
