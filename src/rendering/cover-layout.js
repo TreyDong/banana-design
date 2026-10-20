@@ -1,4 +1,5 @@
 'use strict';
+const { t } = require('../i18n');
 
 // Original local layout engine. Learn from component-to-image workflows without
 // copying repository templates or adding a server, remote fonts or dependencies.
@@ -16,16 +17,16 @@ function normalizeCopy(value = {}, title = '') {
 }
 
 function validateCopy(copy) {
-  if (!copy.headline?.trim()) throw new Error('请填写封面大字');
-  if (!copy.cardImage && !copy.cardMain?.trim()) throw new Error('请填写卡片内容或选择卡片图片');
-  for (const key of COPY_KEYS) if (copy[key]?.length > 300) throw new Error('封面文案过长，请精简「' + ({ badge: '角标', headline: '封面大字', highlight: '强调词', cardTitle: '卡片标题', cardMain: '卡片内容', cardNote: '卡片备注' })[key] + '」');
-  if (copy.benefits.some(t => t.length > 100)) throw new Error('底部要点过长，请精简');
+  if (!copy.headline?.trim()) throw new Error(t('请填写封面大字'));
+  if (!copy.cardImage && !copy.cardMain?.trim()) throw new Error(t('请填写卡片内容或选择卡片图片'));
+  for (const key of COPY_KEYS) if (copy[key]?.length > 300) throw new Error(t('封面文案过长，请精简「') + ({ badge: t('角标'), headline: t('封面大字'), highlight: t('强调词'), cardTitle: t('卡片标题'), cardMain: t('卡片内容'), cardNote: t('卡片备注') })[key] + '」');
+  if (copy.benefits.some(t => t.length > 100)) throw new Error(t('底部要点过长，请精简'));
 }
 
 function parseCopyPlan(raw, title) {
   let value;
-  try { value = JSON.parse(raw.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '')); } catch (_) { throw new Error('文案格式不完整，请重试'); }
-  if (!value || typeof value.idea !== 'string' || !value.idea.trim() || !value.copy || typeof value.copy.headline !== 'string' || typeof value.copy.cardMain !== 'string') throw new Error('文案缺少标题或卡片内容，请重试');
+  try { value = JSON.parse(raw.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '')); } catch (_) { throw new Error(t('文案格式不完整，请重试')); }
+  if (!value || typeof value.idea !== 'string' || !value.idea.trim() || !value.copy || typeof value.copy.headline !== 'string' || typeof value.copy.cardMain !== 'string') throw new Error(t('文案缺少标题或卡片内容，请重试'));
   const copy = normalizeCopy(value.copy, title);
   // A model cannot select arbitrary vault assets or introduce image URLs.
   copy.cardImage = '';
@@ -55,7 +56,7 @@ function textLayout(ctx, text, box, maxSize, weight = 900, lineHeight = 1.13) {
     const lines = text.includes('\n') ? text.split('\n') : wrapText(ctx, text, box.w);
     if (lines.length * size * lineHeight <= box.h && lines.every(line => ctx.measureText(line).width <= box.w)) return { lines, size, lineHeight: size * lineHeight };
   }
-  throw new Error('此尺寸无法完整容纳文案，请缩短文字或增大画幅');
+  throw new Error(t('此尺寸无法完整容纳文案，请缩短文字或增大画幅'));
 }
 
 function drawText(ctx, text, box, maxSize, color = '#fff', options = {}) {
@@ -85,7 +86,7 @@ function roundRect(ctx, x, y, w, h, radius, color) {
 
 function layoutBoxes(w, h) {
   const ratio = w / h;
-  if (!Number.isFinite(ratio) || ratio < 0.5 || ratio > 3) throw new Error('大字卡片模板适合 1:2 至 3:1 画幅，请调整尺寸');
+  if (!Number.isFinite(ratio) || ratio < 0.5 || ratio > 3) throw new Error(t('大字卡片模板适合 1:2 至 3:1 画幅，请调整尺寸'));
   const margin = w * 0.05, wide = ratio >= 1.35;
   return {
     wide, margin,
@@ -107,7 +108,7 @@ function drawBenefitIcon(ctx, x, y, r, index) {
 
 async function decodeImage(buf) {
   const url = URL.createObjectURL(new Blob([buf]));
-  try { const img = new Image(); await new Promise((resolve, reject) => { img.onload = resolve; img.onerror = () => reject(new Error('卡片图片无法读取')); img.src = url; }); return img; }
+  try { const img = new Image(); await new Promise((resolve, reject) => { img.onload = resolve; img.onerror = () => reject(new Error(t('卡片图片无法读取'))); img.src = url; }); return img; }
   finally { URL.revokeObjectURL(url); }
 }
 
@@ -117,7 +118,7 @@ async function renderNeonCover(copyInput, w, h, imageBuffer) {
   // Native Chromium canvas renders installed Chinese fonts; wait for ready fonts.
   if (document.fonts?.ready) await document.fonts.ready;
   const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
-  const ctx = canvas.getContext('2d'); if (!ctx) throw new Error('本机画布无法初始化');
+  const ctx = canvas.getContext('2d'); if (!ctx) throw new Error(t('本机画布无法初始化'));
   ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
   const edge = Math.max(2, w * 0.008);
   roundRect(ctx, edge, edge, w - edge * 2, h - edge * 2, w * 0.025, '#070a08');
@@ -151,7 +152,7 @@ async function renderNeonCover(copyInput, w, h, imageBuffer) {
     drawText(ctx, text, { x: x + r * 2.65, y: f.y, w: width - r * 3.4, h: f.h }, w * 0.026, '#e8eee2', { weight: 700, valign: 'center' });
   });
   const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-  if (!blob) throw new Error('封面导出失败');
+  if (!blob) throw new Error(t('封面导出失败'));
   return Buffer.from(await blob.arrayBuffer());
 }
 
