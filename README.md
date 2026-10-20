@@ -40,7 +40,7 @@ The plugin ID remains `banana-design`, the command remains `open`, and the setti
 
 Open the official [Obsidian Community listing](https://community.obsidian.md/plugins/banana-design) and choose **Add to Obsidian**. Version 0.10.1 was published on 2026-10-19; its automated review completed with **Health: Excellent** and **Review: Satisfactory**, including a byte-for-byte reproduced build. Review warnings remain visible on the listing.
 
-The bundled `main.js` is 5,507,343 bytes. Obsidian Sync Standard cannot sync files larger than 5 MB, so install the plugin separately on each desktop if you use that plan. The release embeds the offline template previews in the standard three-file package.
+The published 0.10.1 `main.js` is 5,507,343 bytes; the expanded local catalog is larger. Obsidian Sync Standard cannot sync files larger than 5 MB, so install the plugin separately on each desktop if you use that plan. The release embeds the offline template previews in the standard three-file package.
 
 For a manual install, download **main.js**, **manifest.json** and **styles.css** from the matching [GitHub Release](https://github.com/TreyDong/banana-design/releases) and place them in `<vault>/.obsidian/plugins/banana-design/`. Enable Banana Design in Community plugins. Do not copy source folders or any other person's `data.json` into the vault.
 
@@ -65,9 +65,9 @@ The engraving template is a style reference; its AI-generated generic preview is
 
 ## Expanded local template catalog
 
-The local source adds 12 article-led templates to the existing 3: conceptual typography, layered paper world, watercolor notes, knowledge flow, two-way comparison, scientific scales, exploded structure, isometric room, cinematic narrative, documentary lens, ink landscape and editorial still life. Each supports both covers and body illustrations, independent dimensions, editable prompts and saved custom overrides. The source link appears in the template library when the template is selected. Offline previews are labeled **layout studies**, not generated-output samples.
+The local source adds 15 article-led recipes to the existing 3. They cover conceptual typography, paper, watercolor, diagrams, cinematic scenes, lifestyle photography, ink, still life, human narrative, opinion collage and literary painting. Covers and body illustrations have separate prompts, independent dimensions and saved custom overrides. The source link appears in the template library when selected. Body previews are labeled **layout studies**; the seven sampled cover directions use actual generated-cover previews.
 
-These are informed by a popular GPT Image repository's documented categories and production rules. Repository stars are not per-template use counts. No runtime connection to the reference repository or fixed image provider is added. See [catalog sources and scope](notes/template-catalog.md). This local addition has not been published as a new community Release.
+The original category recipes are informed by a popular GPT Image repository's documented categories and production rules. The four new editorial directions use independently written rules informed by real publication-design references. Repository stars and article views are not per-template use counts or proof of a cover's causal effect. No runtime reference-site request or fixed image provider is added. See [catalog sources and scope](notes/template-catalog.md) and [editorial directions and AttentionVC cover analysis](notes/editorial-cover-research-2026-10-20.md). This local addition has not been published as a new community Release.
 
 ## Changes
 
@@ -81,6 +81,6 @@ These are informed by a popular GPT Image repository's documented categories and
 
 ## Cover samples and illustration recipes
 
-The cover library prioritizes the existing blank, engraving and neon layouts plus three generated-cover directions: conceptual paper typography, cinematic spatial storytelling and tactile metaphorical still life. Their offline previews are actual generated covers, using the same example article title. The scene is planned again from each selected article; the sample object is not imposed on every future cover.
+The cover library includes the existing blank, engraving and neon layouts plus seven generated-cover directions: conceptual paper typography, cinematic spatial storytelling, tactile metaphorical still life, human narrative, opinion collage, quiet lifestyle photography and literary painting. Their offline previews are actual generated covers, using the same example article title. Each selected article supplies a new scene; the sample person, object and setting are not imposed on later covers. The four newer directions also support title-free images; the selected text rule takes priority over typography guidance.
 
 Process, comparison, scale and other diagram recipes remain available in the article-illustration library. Existing active choices and saved user customizations remain accessible. A sample demonstrates one generated result, not a guarantee that every model produces an identical image. Source prompts, sample evidence and validation status are in [the template notes](notes/template-catalog.md).

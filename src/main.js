@@ -889,6 +889,10 @@ class BDView extends ItemView {
     if (scope === 'cover' && template.coverPreviewAsset === 'gpt-concept-type') return require('../assets/gpt-concept-type.webp');
     if (scope === 'cover' && template.coverPreviewAsset === 'gpt-cinematic-story') return require('../assets/gpt-cinematic-story.webp');
     if (scope === 'cover' && template.coverPreviewAsset === 'gpt-object-editorial') return require('../assets/gpt-object-editorial.webp');
+    if (scope === 'cover' && template.coverPreviewAsset === 'gpt-human-narrative') return require('../assets/gpt-human-narrative.webp');
+    if (scope === 'cover' && template.coverPreviewAsset === 'gpt-opinion-collage') return require('../assets/gpt-opinion-collage.webp');
+    if (scope === 'cover' && template.coverPreviewAsset === 'gpt-quiet-photo') return require('../assets/gpt-quiet-photo.webp');
+    if (scope === 'cover' && template.coverPreviewAsset === 'gpt-literary-painting') return require('../assets/gpt-literary-painting.webp');
     const asset = template.previewAsset;
     if (asset === 'dan-koe') return require('../assets/dan-koe.png');
     if (asset === 'neon-card') return require('../assets/neon-card.svg');
