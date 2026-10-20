@@ -264,3 +264,11 @@ Typography group on the left, one strict left edge about 6% inset, within the le
 Keep the type group roughly vertically centered in the calm left sea region, approximately y=25% through 67% of image height. Clear space between lead-in and main line, tight but comfortable headline spacing. Optical alignment, balanced punctuation, measured compact tracking. A strong keyword hierarchy, not three equally huge lines and not a wall of text. Give the entire group enough breathing room and do not cover the person or paper frame.
 One accent color only; all remaining main text warm ivory. No box, gradient, glow, shadow, underline, decorative strokes, badges, icons, caption, byline, date, watermark or border. No right-side information card from image 1. No new scene elements. Deliver ONE complete edited blue cover, not a side-by-side or a reference board.
 ```
+
+## D 获认可并采用为文学绘画预览
+
+用户明确反馈“这个就很不错了”，确认采用 D 的文字方向。将 D 的已认可成图完整缩放编码为 `assets/gpt-literary-painting.webp`，更新本地文学绘画模板的离线预览；原始 D 方向稿仍独立保留，旧预览可从 Git 历史恢复。没有改写标题、改变个人模板选择或新增设置。
+
+厚实紧凑黑体、一个关键词放大/单色强调、严格对齐与留白继续作为四种新编辑方向的现行文字规则。认可的是 D，本记录较早的宋体、轻字重和竖排均只是被保留的探索，不代表当前定稿。其他三种模板的现有缩略图没有在这次替换。
+
+构建和 13 项检查通过，包括更新预览在独立三文件包中的加载。个人安装及公开 Release 仍未替换，原生界面验收保持待用户稍后恢复。
