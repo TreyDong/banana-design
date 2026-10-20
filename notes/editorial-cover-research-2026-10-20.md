@@ -237,3 +237,30 @@ For a canvas around 1920×818, use approximate character heights 36px, 58px and 
 Left align all three to one optical edge around x=7% of canvas. Place the complete group in the calm left water region, beginning around y=32% of canvas. Leave about 30px between first and second line and 22px between second and third line. The whole type group should occupy only about 43% canvas width and 28–31% canvas height, distinctly smaller and quieter than the original. Main phrase is the only large line. Use measured slightly open letter spacing and naturally balanced punctuation; no arbitrary spaces within Chinese words.
 Color one warm ivory, clean edged, with ample blue sea showing around and between the lines. Keep the person and sunset unobstructed. No separate caption box, colored keyword, underline, gradient letters, stroke outline, drop shadow, badge, extra decorative words, date, logo, fake byline, border, watermark, side-by-side or mockup. Deliver one complete cover.
 ```
+
+## D：用户提供实际字体参考
+
+用户随后提供暖白底、橙色大号“100”的榜单封面，明确要求观察其中的文字。该参考比此前“可能需要更轻字体”的推测更具体，优先采用。可观察的特征是厚实紧凑的现代黑体、一个最大的关键词或数字、严格对齐、单色强调和充足留白；并不能仅凭截图确认具体字体文件。
+
+使用用户图片作为文字风格参考、原蓝色文学绘画作为编辑目标，通过内置 imagegen 制作 [D：参考字重与关键词层级](../assets/typography-reference-study.webp)。保留原完整标题，用现有连续词“质感”作焦点，不移植示例的“100”、右侧信息卡、正文、下载按钮或身份标记。已检查生成标题完整、词序和标点保留；人物与整体场景保持，模型编辑可能产生细微笔触差异，不声称像素级一致或精确使用了原参考字体。
+
+四种新编辑方向的默认文字规则已依照这个明确参考校正：厚实紧凑黑体、次要文字退让、最多一个原题关键词放大/单色强调、混排基线与严格对齐。绘画风格不再自动强制宋体，用户明确指定其他字体时仍优先。原有模板、正文规则和自定义覆盖保持。前面的轻字重与竖排样张作为探索记录保留，不作为已获认可方案。D 同样尚未获得用户定稿确认，未替换现有预览、个人安装或公开版本。
+
+### D 实际编辑提示词
+
+```text
+Use case: text-localization.
+There are TWO input images with DIFFERENT roles:
+Image 1 (warm cream cover with the large orange 100) is a TYPOGRAPHY REFERENCE ONLY. Study its compact, forceful Chinese black sans-serif letterforms, solid strokes, dense clean silhouette, precise left alignment, generous margins, and one oversized orange emphasis that shares a baseline with smaller black words. Do not copy its wording, numbers, white card, icons, logo, download button, layout UI or background.
+Image 2 (blue seaside painting with a person holding a paper frame) is the EDIT TARGET. Preserve its painting, person, body pose, paper frame, coat, village, water, lighting, palette, crop and brushwork. Change ONLY the lettering. Remove all original Songti text and restore the painted sea behind it. Keep its landscape 2.35:1 aspect ratio.
+The new text should use the TYPOGRAPHIC LOGIC of image 1, adapted for a dark painted cover. In particular, the Chinese type must be HEAVY, COMPACT and GEOMETRIC, comparable in density to the reference headline “全球精选榜单”. NOT a light modern font, NOT Songti or other serif, NOT calligraphy, NOT bubble letters, NOT an ordinary light UI font. Use crisp squared terminals, solid clean strokes and optically consistent Chinese and Latin AI. Do not fake bold by adding an outline.
+Exact entire title:
+审美不够，怎么用 AI 做出更有质感的产品？
+Preserve every word and punctuation in this reading order, with no added copy.
+Typography group on the left, one strict left edge about 6% inset, within the left 51% of the canvas:
+1. Small lead-in “审美不够，” in muted terracotta, around 42px character height at a 1920px-wide canvas.
+2. Strong main line “怎么用 AI 做出” in warm ivory HEAVY compact Chinese sans-serif, around 86–94px character height.
+3. One composed baseline reading “更有质感的产品？”: “更有” and “的产品？” in warm ivory HEAVY compact sans-serif around 78–82px character height; the consecutive word “质感” is the single focal emphasis, about 1.65–1.8 times that character height, in muted warm terracotta sampled from the person's orange coat. All pieces share ONE BASELINE and read seamlessly as a single phrase. Do not put a break inside “质感” and do not swap word order. The bigger “质感” should play the same typographic role as the orange 100 in the reference, without inventing any number.
+Keep the type group roughly vertically centered in the calm left sea region, approximately y=25% through 67% of image height. Clear space between lead-in and main line, tight but comfortable headline spacing. Optical alignment, balanced punctuation, measured compact tracking. A strong keyword hierarchy, not three equally huge lines and not a wall of text. Give the entire group enough breathing room and do not cover the person or paper frame.
+One accent color only; all remaining main text warm ivory. No box, gradient, glow, shadow, underline, decorative strokes, badges, icons, caption, byline, date, watermark or border. No right-side information card from image 1. No new scene elements. Deliver ONE complete edited blue cover, not a side-by-side or a reference board.
+```
