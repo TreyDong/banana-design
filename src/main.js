@@ -111,7 +111,7 @@ function session(bin) {
   if (shared) return shared;
   const rpc = new Rpc(bin, os.tmpdir());
   const ready = (async () => {
-    await rpc.request('initialize', { clientInfo: { name: 'banana_design', title: 'Banana Design', version: '0.10.1' } }, 20000);
+    await rpc.request('initialize', { clientInfo: { name: 'banana_design', title: 'Banana Design', version: '0.10.2' } }, 20000);
     rpc.notify('initialized');
   })();
   shared = { bin, rpc, ready, busy: 0, idle: null };
