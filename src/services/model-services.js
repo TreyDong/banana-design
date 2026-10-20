@@ -1,4 +1,5 @@
 'use strict';
+const { t } = require('../i18n');
 // Provider presets adapted from the installed Qiaomu Design 0.3.0.
 const TEXT_PROVIDERS = [
   {
@@ -461,12 +462,12 @@ const http = require('http'), https = require('https'), crypto = require('crypto
 const GROUPS = [['account','ChatGPT / Codex'],['plan','Coding 套餐'],['provider','API 服务商'],['local','本地服务'],['custom','自定义']];
 function providers(kind) { return kind === 'image' ? IMAGE_PROVIDERS : TEXT_PROVIDERS; }
 function preset(kind, id) { return providers(kind).find(p => p.id === id) || providers(kind).find(p => p.id === 'custom'); }
-function abortError() { const e = new Error('已停止'); e.name = 'AbortError'; return e; }
+function abortError() { const e = new Error(t('已停止')); e.name = 'AbortError'; return e; }
 function check(signal) { if (signal?.aborted) throw abortError(); }
 function cleanURL(value) {
   const url = new URL(String(value).trim());
-  if (!['http:','https:'].includes(url.protocol) || url.username || url.password || url.search || url.hash) throw new Error('请填写 HTTP / HTTPS API 根地址，不包含密钥或查询参数');
-  if (url.protocol === 'http:' && !['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)) throw new Error('远程 API 必须使用 HTTPS；仅本机服务可用 HTTP');
+  if (!['http:','https:'].includes(url.protocol) || url.username || url.password || url.search || url.hash) throw new Error(t('请填写 HTTP / HTTPS API 根地址，不包含密钥或查询参数'));
+  if (url.protocol === 'http:' && !['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)) throw new Error(t('远程 API 必须使用 HTTPS；仅本机服务可用 HTTP'));
   return url.href.replace(/\/+$/, '');
 }
 function endpoint(config, suffix) { const base = cleanURL(config.baseUrl); return base.endsWith('/' + suffix) ? base : base + '/' + suffix; }
@@ -478,21 +479,21 @@ function request(url, options = {}) {
     const finish = (error, result) => { if (settled) return; settled = true; clearTimeout(timer); signal?.removeEventListener('abort', stop); error ? reject(error) : resolve(result); };
     const stop = () => { const e = abortError(); req?.destroy(e); finish(e); };
     try {
-      const target = new URL(url); if (!['http:','https:'].includes(target.protocol)) throw new Error('返回的图片地址无效');
-      if (target.username || target.password || (target.protocol === 'http:' && !['localhost','127.0.0.1','[::1]'].includes(target.hostname))) throw new Error('网络地址必须使用 HTTPS；仅本机服务可用 HTTP');
+      const target = new URL(url); if (!['http:','https:'].includes(target.protocol)) throw new Error(t('返回的图片地址无效'));
+      if (target.username || target.password || (target.protocol === 'http:' && !['localhost','127.0.0.1','[::1]'].includes(target.hostname))) throw new Error(t('网络地址必须使用 HTTPS；仅本机服务可用 HTTP'));
       const body = options.body != null ? Buffer.from(options.body) : options.json != null ? Buffer.from(JSON.stringify(options.json)) : null;
       const headers = { ...options.headers };
       if (options.json != null) headers['Content-Type'] = 'application/json';
       if (body) headers['Content-Length'] = body.length;
       req = (target.protocol === 'https:' ? https : http).request(target, { method: options.method || (body ? 'POST' : 'GET'), headers }, res => {
         const chunks = []; let length = 0;
-        res.on('data', chunk => { length += chunk.length; if (length > 60 * 1024 * 1024) { const e = new Error('服务返回的图片过大'); req.destroy(e); finish(e); } else chunks.push(chunk); });
+        res.on('data', chunk => { length += chunk.length; if (length > 60 * 1024 * 1024) { const e = new Error(t('服务返回的图片过大')); req.destroy(e); finish(e); } else chunks.push(chunk); });
         res.on('error', e => finish(signal?.aborted ? abortError() : e));
         res.on('end', () => finish(null, { status: res.statusCode, headers: res.headers, buf: Buffer.concat(chunks) }));
       });
       req.on('error', e => finish(signal?.aborted ? abortError() : e));
       signal?.addEventListener('abort', stop, { once: true });
-      timer = setTimeout(() => { const e = new Error('模型服务请求超时'); req.destroy(e); finish(e); }, timeout);
+      timer = setTimeout(() => { const e = new Error(t('模型服务请求超时')); req.destroy(e); finish(e); }, timeout);
       if (body) req.write(body); req.end();
     } catch (e) { finish(e); }
   });
@@ -519,7 +520,7 @@ function validateConnection(kind, raw) {
   else config.protocol = ['codex','openai','openai-responses','anthropic'].includes(raw.protocol) ? raw.protocol : provider.protocol;
   const cli = (config.protocol || config.engine) === 'codex';
   if (config.engine === 'gemini') config.model = config.model.replace(/^models\//, '');
-  if (!cli) { config.baseUrl = cleanURL(config.baseUrl); if (!config.model) throw new Error('请填写模型名称或从模型列表选择'); }
+  if (!cli) { config.baseUrl = cleanURL(config.baseUrl); if (!config.model) throw new Error(t('请填写模型名称或从模型列表选择')); }
   return config;
 }
 function migrate(settings) {
@@ -548,20 +549,20 @@ async function generateText(config, key, system, user, signal) {
     data = await jsonRequest(endpoint(config,'chat/completions'), {json:{model:config.model,messages:[{role:'system',content:system},{role:'user',content:user}],stream:false},headers:headers(config,key),signal}, key);
     result = contentText(data.choices?.[0]?.message?.content);
   }
-  check(signal); if (!result?.trim()) throw new Error('模型没有返回正文，请检查所选模型和接口'); return result;
+  check(signal); if (!result?.trim()) throw new Error(t('模型没有返回正文，请检查所选模型和接口')); return result;
 }
 function aspectRatio(width, height) {
   const ratios = [['1:1',1],['3:4',.75],['4:3',4/3],['9:16',9/16],['16:9',16/9],['2:3',2/3],['3:2',1.5],['21:9',21/9]];
   return ratios.reduce((best, item) => Math.abs(Math.log(item[1] / (width/height))) < Math.abs(Math.log(best[1] / (width/height))) ? item : best)[0];
 }
-function referenceData(url) { const match = /^data:(image\/(?:png|jpeg|webp));base64,([a-zA-Z0-9+/=]+)$/.exec(url); if (!match) throw new Error('参考图格式不支持'); return {mimeType:match[1],data:match[2]}; }
+function referenceData(url) { const match = /^data:(image\/(?:png|jpeg|webp));base64,([a-zA-Z0-9+/=]+)$/.exec(url); if (!match) throw new Error(t('参考图格式不支持')); return {mimeType:match[1],data:match[2]}; }
 async function download(url, signal, hops = 0) {
   check(signal); const match = /^data:([^;]+);base64,([\s\S]+)$/.exec(url);
   if (match) return {buf:Buffer.from(match[2],'base64'),ext:match[1].includes('webp')?'.webp':'.png'};
   const r = await request(url,{signal,timeout:60000});
   if ([301,302,303,307,308].includes(r.status) && r.headers.location && hops < 4) return download(new URL(r.headers.location,url).href,signal,hops+1);
   if (r.status < 200 || r.status >= 300) throw serviceError(r.status,{},'');
-  check(signal); if (!r.buf.length) throw new Error('返回的图片为空');
+  check(signal); if (!r.buf.length) throw new Error(t('返回的图片为空'));
   return {buf:r.buf,ext:String(r.headers['content-type']).includes('webp')?'.webp':'.png'};
 }
 async function decodeImage(data, signal) {
@@ -570,7 +571,7 @@ async function decodeImage(data, signal) {
   if (typeof base64 === 'string' && base64) return {buf:Buffer.from(base64,'base64'),ext:String(image.media_type || '').includes('webp')?'.webp':'.png'};
   const url = image.url || image.image_url?.url || data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
   if (url) return download(url,signal);
-  throw new Error(contentText(data.choices?.[0]?.message?.content) || data.error?.message || '模型没有返回图片，请检查是否选择了生图模型');
+  throw new Error(contentText(data.choices?.[0]?.message?.content) || data.error?.message || t('模型没有返回图片，请检查是否选择了生图模型'));
 }
 function multipart(fields, refs) {
   const boundary = 'banana-' + crypto.randomBytes(12).toString('hex'), parts = [];
@@ -584,7 +585,7 @@ async function generateImage(config, key, prompt, refs, width, height, signal) {
     const parts = [{text:prompt},...refs.map(url=>({inlineData:referenceData(url)}))];
     data = await jsonRequest(endpoint(config,'models/'+encodeURIComponent(config.model)+':generateContent'), {json:{contents:[{parts}],generationConfig:{responseModalities:['TEXT','IMAGE'],imageConfig:{aspectRatio:aspectRatio(width,height)}}},headers:{'x-goog-api-key':key},signal,timeout}, key);
     const image = (data.candidates?.[0]?.content?.parts || []).find(p => p.inlineData?.data || p.inline_data?.data);
-    if (!image) throw new Error(data.promptFeedback?.blockReason || 'Gemini 没有返回图片');
+    if (!image) throw new Error(data.promptFeedback?.blockReason || t('Gemini 没有返回图片'));
     const inline = image.inlineData || image.inline_data; check(signal); return {buf:Buffer.from(inline.data,'base64'),ext:String(inline.mimeType || inline.mime_type).includes('webp')?'.webp':'.png'};
   }
   if (config.engine === 'ark') {
@@ -599,15 +600,15 @@ async function generateImage(config, key, prompt, refs, width, height, signal) {
     if (!data) data = await jsonRequest(endpoint(config,'chat/completions'), {json:{model:config.model,messages:[{role:'user',content:[{type:'text',text:prompt},...refs.map(url=>({type:'image_url',image_url:{url}}))]}],modalities:['image','text'],image_config:{aspect_ratio:aspectRatio(width,height)},stream:false},headers:auth,signal,timeout}, key);
   } else if (config.provider === 'siliconflow') {
     const qwen = /Qwen-Image/i.test(config.model), edit = /Qwen-Image-Edit/i.test(config.model), kolors = /Kolors/i.test(config.model);
-    if (refs.length && !(edit || kolors)) throw new Error('参考图修改请选择 Qwen-Image Edit 或 Kolors 生图模型');
-    if (refs.length > (edit ? 3 : 1)) throw new Error('该模型最多支持 ' + (edit ? 3 : 1) + ' 张参考图');
+    if (refs.length && !(edit || kolors)) throw new Error(t('参考图修改请选择 Qwen-Image Edit 或 Kolors 生图模型'));
+    if (refs.length > (edit ? 3 : 1)) throw new Error(t('该模型最多支持 ') + (edit ? 3 : 1) + t(' 张参考图'));
     const sizes = qwen ? [[1328,1328],[1664,928],[928,1664],[1472,1140],[1140,1472],[1584,1056],[1056,1584]] : [[1024,1024],[1280,960],[960,1280],[1440,720],[720,1440],[1280,720],[720,1280]];
     const target = sizes.reduce((best,item) => Math.abs(Math.log(item[0]/item[1]/(width/height))) < Math.abs(Math.log(best[0]/best[1]/(width/height))) ? item : best);
     data = await jsonRequest(endpoint(config,'images/generations'), {json:{model:config.model,prompt,...(!edit?{image_size:target.join('x')}:{}),...(qwen?{num_inference_steps:50,cfg:4}:{}),...Object.fromEntries(refs.map((url,i)=>[i?'image'+(i+1):'image',url]))},headers:auth,signal,timeout}, key);
   } else {
     const size = width/height > 1.1 ? '1536x1024' : width/height < .9 ? '1024x1536' : '1024x1024';
     if (refs.length) {
-      if (!['openai','custom'].includes(config.provider)) throw new Error('该服务的所选生图接口不支持参考图，请选择 Codex、OpenAI、Gemini、Seedream 或 OpenRouter');
+      if (!['openai','custom'].includes(config.provider)) throw new Error(t('该服务的所选生图接口不支持参考图，请选择 Codex、OpenAI、Gemini、Seedream 或 OpenRouter'));
       const form = multipart({model:config.model,prompt,n:1,size},refs);
       data = await jsonRequest(endpoint(config,'images/edits'), {body:form.body,headers:{...auth,'Content-Type':form.contentType},signal,timeout}, key);
     } else data = await jsonRequest(endpoint(config,'images/generations'), {json:{model:config.model,prompt,n:1,size},headers:auth,signal,timeout}, key);

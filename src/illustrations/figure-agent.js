@@ -1,4 +1,5 @@
 'use strict';
+const { t } = require('../i18n');
 const { createHash } = require('crypto');
 const digest = s => createHash('sha256').update(s).digest('hex');
 const normalize = s => String(s).replace(/\s+/g, ' ').trim();
@@ -60,25 +61,25 @@ function makeAnchor(block, blocks, articlePath, content, side = 'after') {
 }
 
 function resolveAnchor(anchor, blocks, articlePath, content) {
-  if (!anchor || anchor.articlePath !== articlePath) throw new Error('配图所属文章不同，请重新选择插入位置');
+  if (!anchor || anchor.articlePath !== articlePath) throw new Error(t('配图所属文章不同，请重新选择插入位置'));
   const matches = blocks.filter(b => b.key === anchor.key);
-  if (anchor.occurrences > 1 && matches.length !== anchor.occurrences && anchor.documentKey !== digest(content)) throw new Error('相同段落的数量已变化，请重新选择插入位置');
+  if (anchor.occurrences > 1 && matches.length !== anchor.occurrences && anchor.documentKey !== digest(content)) throw new Error(t('相同段落的数量已变化，请重新选择插入位置'));
   if (matches.length === 1 && !(anchor.occurrences > 1)) return matches[0];
-  if (!matches.length) throw new Error('原段落已修改或删除，请重新选择插入位置');
+  if (!matches.length) throw new Error(t('原段落已修改或删除，请重新选择插入位置'));
   if (anchor.documentKey === digest(content)) { const original = matches.find(b => b.id === anchor.blockId); if (original) return original; }
   const ranked = matches.map(block => {
     const i = blocks.indexOf(block);
     return { block, score: (anchor.heading && block.heading === anchor.heading ? 1 : 0) + (anchor.previousKey && blocks[i - 1]?.key === anchor.previousKey ? 2 : 0) + (anchor.nextKey && blocks[i + 1]?.key === anchor.nextKey ? 2 : 0) };
   }).sort((a, b) => b.score - a.score);
   if (ranked[0].score > 0 && (!ranked[1] || ranked[0].score > ranked[1].score)) return ranked[0].block;
-  throw new Error('存在多个相同段落，无法确认位置，请重新选择插入位置');
+  throw new Error(t('存在多个相同段落，无法确认位置，请重新选择插入位置'));
 }
 
 function figureAnchor(figure, blocks, articlePath, content) {
-  if (figure.sourcePath && figure.sourcePath !== articlePath) throw new Error('配图所属文章不同，请重新选择插入位置');
+  if (figure.sourcePath && figure.sourcePath !== articlePath) throw new Error(t('配图所属文章不同，请重新选择插入位置'));
   if (figure.anchor) return figure.anchor;
   const key = digest(normalize(figure.section || '')), candidates = blocks.filter(b => b.key === key);
-  if (candidates.length !== 1) throw new Error('旧配图的原段落已变化或不唯一，请重新选择插入位置');
+  if (candidates.length !== 1) throw new Error(t('旧配图的原段落已变化或不唯一，请重新选择插入位置'));
   return makeAnchor(candidates[0], blocks, articlePath, content);
 }
 
@@ -113,8 +114,8 @@ function placeholderFor(planId, index) { return '[img_bd_' + digest(planId).slic
 function assertOwnership(figures, articlePath) {
   const ids = new Set();
   for (const figure of figures) {
-    if (figure.sourcePath !== articlePath) throw new Error('执行计划所属文章不同');
-    if (!PLACEHOLDER.test(figure.placeholder || '') || ids.has(figure.placeholder)) throw new Error('本批占位符编号无效或重复，请重新规划');
+    if (figure.sourcePath !== articlePath) throw new Error(t('执行计划所属文章不同'));
+    if (!PLACEHOLDER.test(figure.placeholder || '') || ids.has(figure.placeholder)) throw new Error(t('本批占位符编号无效或重复，请重新规划'));
     ids.add(figure.placeholder);
   }
 }
@@ -125,9 +126,9 @@ function inspectPlaceholders(content, figures) {
   let shadow = content;
   const records = figures.map(figure => {
     const token = figure.placeholder;
-    if (!PLACEHOLDER.test(token || '')) throw new Error('占位符编号无效，请重新规划');
+    if (!PLACEHOLDER.test(token || '')) throw new Error(t('占位符编号无效，请重新规划'));
     const count = content.split(token).length - 1;
-    if (count > 1) throw new Error(token + ' 出现多次，请保留一个插入位置');
+    if (count > 1) throw new Error(token + t(' 出现多次，请保留一个插入位置'));
     const sentinel = ('BD' + digest(token)).slice(0, token.length);
     shadow = shadow.split(token).join(sentinel);
     return { figure, token, count, sentinel };
@@ -136,7 +137,7 @@ function inspectPlaceholders(content, figures) {
   return records.map(record => {
     if (!record.count) return { ...record, at: -1 };
     const block = blocks.find(b => b.text.trim() === record.sentinel);
-    if (!block) throw new Error(record.token + ' 需独占一段，不能放在代码、引用、表格或标题中');
+    if (!block) throw new Error(record.token + t(' 需独占一段，不能放在代码、引用、表格或标题中'));
     return { ...record, at: content.indexOf(record.token, block.start), start: block.start, end: block.end };
   });
 }
@@ -145,8 +146,8 @@ function preparePlaceholders(content, figures, articlePath) {
   assertOwnership(figures, articlePath);
   const slots = inspectPlaceholders(content, figures), existing = slots.filter(s => s.count);
   if (existing.length === figures.length) return { content, created: 0 };
-  if (existing.length) throw new Error('本批占位符不完整，请恢复缺失的占位符或取消后重新规划');
-  if (figures.some(f => f.vaultPath && hasVisibleImage(content, f.vaultPath))) throw new Error('本批已有图片插入文章，请重新规划新的执行计划');
+  if (existing.length) throw new Error(t('本批占位符不完整，请恢复缺失的占位符或取消后重新规划'));
+  if (figures.some(f => f.vaultPath && hasVisibleImage(content, f.vaultPath))) throw new Error(t('本批已有图片插入文章，请重新规划新的执行计划'));
   const blocks = articleBlocks(content), groups = new Map();
   for (const figure of figures) {
     const block = resolveAnchor(figure.anchor, blocks, articlePath, content), at = figure.anchor.side === 'before' ? block.start : block.end;
@@ -179,10 +180,10 @@ function replacePlaceholders(content, figures, articlePath) {
   const edits = [];
   for (const slot of slots) {
     const figure = slot.figure;
-    if (!figure.vaultPath || figure.status !== 'done') throw new Error('整批图片尚未全部完成，请先完成本批生图');
+    if (!figure.vaultPath || figure.status !== 'done') throw new Error(t('整批图片尚未全部完成，请先完成本批生图'));
     const inserted = hasVisibleImage(content, figure.vaultPath);
-    if (!slot.count) { if (inserted) { already++; continue; } throw new Error(slot.token + ' 已缺失，请恢复占位符后再确认整批'); }
-    if (inserted) throw new Error(slot.token + ' 的图片已在文章中，请先检查重复项');
+    if (!slot.count) { if (inserted) { already++; continue; } throw new Error(slot.token + t(' 已缺失，请恢复占位符后再确认整批')); }
+    if (inserted) throw new Error(slot.token + t(' 的图片已在文章中，请先检查重复项'));
     edits.push({ at: slot.at, token: slot.token, link: '![[' + figure.vaultPath + ']]' });
   }
   let result = content;
@@ -195,8 +196,8 @@ function replacePlaceholders(content, figures, articlePath) {
 function prepareInsertion(content, figures, articlePath) {
   const blocks = articleBlocks(content), seen = new Set(), groups = new Map(); let skipped = 0;
   for (const figure of figures) {
-    if (!figure.vaultPath) throw new Error('图片尚未生成，无法插入');
-    if (figure.sourcePath && figure.sourcePath !== articlePath) throw new Error('配图所属文章不同，请重新选择插入位置');
+    if (!figure.vaultPath) throw new Error(t('图片尚未生成，无法插入'));
+    if (figure.sourcePath && figure.sourcePath !== articlePath) throw new Error(t('配图所属文章不同，请重新选择插入位置'));
     if (seen.has(figure.vaultPath) || hasImage(content, figure.vaultPath)) { skipped++; continue; }
     seen.add(figure.vaultPath);
     const anchor = figureAnchor(figure, blocks, articlePath, content), block = resolveAnchor(anchor, blocks, articlePath, content);
@@ -210,7 +211,7 @@ const PLAN_SYSTEM = '你是文章正文配图 Agent。先阅读整篇文章，�
 
 function planRequest(title, blocks, requirements, previous = null, outputSize = null, template = null) {
   const data = blocks.map(b => ({ id: b.id, heading: b.heading, text: b.text }));
-  if (JSON.stringify(data).length > 70000) throw new Error('文章较长，请先拆分文章后再规划配图');
+  if (JSON.stringify(data).length > 70000) throw new Error(t('文章较长，请先拆分文章后再规划配图'));
   return '文章标题：' + title + '\n本次要求：' + (requirements || '根据文章自行设计，无额外约束') + '\n一次返回整批完整执行计划；用户统一确认后才执行整批生图。可以使用 side="before" 或 "after" 指定段前/段后；未指定则为段后。' +
     (previous ? '\n这是微调已有执行计划：根据本次意见调整，未要求修改的数量、位置和内容应尽量保留。返回完整的调整后计划，不只返回修改片段。\n<previous_plan>\n' + JSON.stringify(previous) + '\n</previous_plan>' : '') +
     (outputSize ? '\n用户指定整批画幅：' + outputSize.w + '×' + outputSize.h + ' px。所有画面都按此宽高比例设计，优先服从此尺寸；format 字段仍从 landscape、wide、square 中选择最接近的类别，最终输出统一使用用户尺寸。' : '\n画幅：landscape=1200×800，wide=1280×720，square=1080×1080。请按信息结构选择。') +
@@ -218,15 +219,15 @@ function planRequest(title, blocks, requirements, previous = null, outputSize = 
 }
 
 function parsePlan(raw, blocks, articlePath, content, outputSize = null, template = null) {
-  let plan; try { plan = JSON.parse(raw.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '')); } catch (_) { throw new Error('配图规划格式不完整，请重新规划'); }
+  let plan; try { plan = JSON.parse(raw.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '')); } catch (_) { throw new Error(t('配图规划格式不完整，请重新规划')); }
   const validString = (value, max) => typeof value === 'string' && value.trim() && value.length <= max;
-  if (!plan || !validString(plan.summary, 1000) || !validString(plan.style, 1600) || !Array.isArray(plan.images) || plan.images.length > MAX_IMAGES) throw new Error('配图规划缺少说明、风格或图片列表，请重新规划');
+  if (!plan || !validString(plan.summary, 1000) || !validString(plan.style, 1600) || !Array.isArray(plan.images) || plan.images.length > MAX_IMAGES) throw new Error(t('配图规划缺少说明、风格或图片列表，请重新规划'));
   const used = new Set();
   const images = plan.images.map(item => {
-    if (!item || typeof item !== 'object' || Array.isArray(item)) throw new Error('配图方案格式无效，请重新规划');
+    if (!item || typeof item !== 'object' || Array.isArray(item)) throw new Error(t('配图方案格式无效，请重新规划'));
     const block = blocks.find(b => b.id === (item.blockId || item.afterBlockId)), side = item.side || 'after';
-    if (!block || used.has(block.id)) throw new Error('配图规划的位置无效或重复，请重新规划');
-    if (!validString(item.title, 100) || !validString(item.purpose, 600) || !validString(item.scene, 7000) || !['before', 'after'].includes(side) || !['illustration', 'diagram', 'comparison', 'chart'].includes(item.kind) || !FORMATS[item.format]) throw new Error('配图规划的画面说明或规格无效，请重新规划');
+    if (!block || used.has(block.id)) throw new Error(t('配图规划的位置无效或重复，请重新规划'));
+    if (!validString(item.title, 100) || !validString(item.purpose, 600) || !validString(item.scene, 7000) || !['before', 'after'].includes(side) || !['illustration', 'diagram', 'comparison', 'chart'].includes(item.kind) || !FORMATS[item.format]) throw new Error(t('配图规划的画面说明或规格无效，请重新规划'));
     used.add(block.id);
     const sourceContext = blocks.filter(b => b.heading === block.heading).map(b => b.text).join('\n\n');
     return { title: item.title.trim(), purpose: item.purpose.trim(), scene: item.scene.trim(), kind: item.kind, format: item.format, ...FORMATS[item.format], plannedW: FORMATS[item.format].w, plannedH: FORMATS[item.format].h, ...(outputSize ? { w: outputSize.w, h: outputSize.h } : {}), section: block.text, sourceContext: sourceContext.slice(0, 18000), sourcePath: articlePath, anchor: makeAnchor(block, blocks, articlePath, content, side), mode: 'agent', agentStyle: plan.style.trim(), ...(template ? { figureTemplate: { ...template }, templateId: template.id, templateName: template.name } : {}), status: 'planned', selected: true };

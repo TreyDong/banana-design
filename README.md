@@ -12,7 +12,9 @@ Create article-led covers and illustrations in Obsidian desktop. Choose an artic
 4. For article illustrations, generate a plan, review or edit the complete batch, then confirm generation. Owned markers reserve the chosen paragraphs; batch insertion replaces only valid markers. Missing or ambiguous targets stop insertion and never silently append images.
 5. Export the selected PNG, insert a cover, or return to an earlier batch. Restarting the workspace clears the current view while retaining saved images and history.
 
-The interface is currently in Chinese. The plugin does not replace the Markdown editor or provide a general autonomous agent. Local card layouts export a flattened PNG; generated image edits use an entire reference image, without a layer or mask editor.
+The interface supports Simplified Chinese and English. In **Settings → Banana Design → Interface language**, choose **Follow Obsidian**, **简体中文** or **English**. The selection is saved and refreshes the workspace immediately. Automatic mode follows Obsidian's language; other host languages use English. Articles, titles, prompts, custom template names, service names and existing history retain their original wording. The language setting controls the interface; it does not request translation of article or image content.
+
+The plugin does not replace the Markdown editor or provide a general autonomous agent. Local card layouts export a flattened PNG; generated image edits use an entire reference image, without a layer or mask editor.
 
 ## Models and connections
 
@@ -58,6 +60,7 @@ The project separates source modules, build tooling, tests and preview assets:
 ```text
 src/
   main.js                      Plugin entry, workspace and settings
+  i18n.js                      Chinese / English interface messages
   services/model-services.js   Model connections and provider protocols
   illustrations/figure-agent.js Article planning, anchors and insertion
   rendering/cover-layout.js    Local cover rendering
@@ -87,6 +90,12 @@ The local source adds 15 article-led recipes to the existing 3. They cover conce
 The original category recipes are informed by a popular GPT Image repository's documented categories and production rules. The four new editorial directions use independently written rules informed by real publication-design references. Repository stars and article views are not per-template use counts or proof of a cover's causal effect. No runtime reference-site request or fixed image provider is added. See [template sources and attribution](THIRD_PARTY_NOTICES.md#awesome-gpt-image-template-research) and the source links in [the catalog](src/templates/catalog.js). This local addition has not been published as a new community Release.
 
 ## Changes
+
+### Interface languages — unreleased
+
+- Added an interface language setting with automatic, Simplified Chinese and English modes, including settings help, workspace controls, template descriptions, model dialogs and authored status/error messages.
+- Language changes persist and refresh the workspace. User-authored content, template instructions, saved image names and paths retain their original wording. Language changes are disabled during active generation or insertion.
+- Validation: all 15 regression checks pass, including saved language choices, automatic host-language selection, save-failure rollback, custom template text and unchanged generation prompts/output paths. Native Obsidian 1.14.4 checks covered Chinese/English settings, model forms, workspace tabs and template descriptions, plus persistence across plugin reload. The local installation is updated; this change has not been published as a new Release.
 
 ### Source organization — 2026-10-20
 

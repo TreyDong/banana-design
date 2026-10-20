@@ -9,6 +9,8 @@ const {createRequire} = require('node:module');
 const root = path.resolve(__dirname, '..');
 const services = require('../src/services/model-services.js');
 const figures = require('../src/illustrations/figure-agent.js');
+const i18n = require('../src/i18n.js');
+let hostLanguage = 'zh-CN';
 class HostPlugin {
   constructor(app) { this.app = app; this.manifest = {id:'banana-design',version:'0.10.1',dir:'.obsidian/plugins/banana-design'}; this.commands=[]; }
   async loadData() { return this.saved || null; }
@@ -19,7 +21,7 @@ class HostPlugin {
   addSettingTab() {}
   registerEvent() {}
 }
-const host = {Plugin:HostPlugin,ItemView:class{},PluginSettingTab:class{},Modal:class{constructor(){this.scope={win:null};}open(){this.scope.win={};}},FuzzySuggestModal:class{constructor(){this.scope={win:null};}open(){this.scope.win={};}},TFile:class{},MarkdownView:class{},Menu:class{},Notice:class{},normalizePath:s=>s.replace(/\\/g,'/'),setIcon(){}};
+const host = {getLanguage:()=>hostLanguage,Plugin:HostPlugin,ItemView:class{},PluginSettingTab:class{},Modal:class{constructor(){this.scope={win:null};}open(){this.scope.win={};}},FuzzySuggestModal:class{constructor(){this.scope={win:null};}open(){this.scope.win={};}},TFile:class{},MarkdownView:class{},Menu:class{},Notice:class{},normalizePath:s=>s.replace(/\\/g,'/'),setIcon(){}};
 function load(filename, expose=false) {
   const mod={exports:{}}; const local=createRequire(filename);
   const safeRequire = id => {
@@ -29,7 +31,7 @@ function load(filename, expose=false) {
     return local(id);
   };
   let source=fs.readFileSync(filename,'utf8');
-  if(expose) source+='\nmodule.exports.testHooks = {readGeneratedImage,BDView,TemplateLibraryModal,PromptTemplateEditor,imageFolder,outputRules,createOutputTask,outputImageName,promptTemplates,templateChoices,figureRecipe,renderFigureRecipe,renderTemplatePrompt};';
+  if(expose) source+='\nmodule.exports.testHooks = {readGeneratedImage,BDView,TemplateLibraryModal,PromptTemplateEditor,imageFolder,outputRules,createOutputTask,outputImageName,promptTemplates,templateChoices,figureRecipe,renderFigureRecipe,renderTemplatePrompt,templateLabel,PLATFORMS,FIGURE_SIZES,PALETTES,RENDERINGS,MODULES};';
   vm.runInNewContext(source,{module:mod,exports:mod.exports,require:safeRequire,Buffer,URL,Blob,process,console,setTimeout,clearTimeout,AbortController,document:{getElementById:()=>null}},{filename});
   return mod.exports;
 }
@@ -165,4 +167,43 @@ test('cover library separates validated covers from body diagrams while preservi
   assert.ok(hooks.templateChoices(settings,'cover','gpt-knowledge-flow').some(t=>t.id==='gpt-knowledge-flow'));
   const custom={promptTemplates:[{id:'gpt-paper-world',name:'我的纸雕',planningPrompt:'My plan',imagePrompt:'My image'}]};
   assert.ok(hooks.templateChoices(custom,'cover').some(t=>t.id==='gpt-paper-world'));
+});
+
+test('interface language follows Obsidian, persists explicit choices and rolls back failed saves',async()=>{
+  const Plugin=load(path.join(root,'main.js'),true);
+  const app={vault:{adapter:{exists:async()=>true,mkdir:async()=>{}},on:()=>({})},workspace:{on:()=>({})}};
+  const plugin=new Plugin(app);await plugin.onload();
+  assert.equal(plugin.settings.language,'auto');assert.equal(plugin.commands[0].name,'打开配图工作台');
+  let redraws=0;plugin.view={render(){redraws++;}};
+  const before=JSON.stringify({...plugin.settings,language:null});
+  await plugin.setLanguage('en');assert.equal(plugin.saved.language,'en');assert.equal(plugin.commands[0].name,'Open illustration workspace');assert.equal(redraws,1);
+  assert.equal(JSON.stringify({...plugin.settings,language:null}),before);
+  const persistedEnglish=JSON.parse(JSON.stringify(plugin.saved));
+  hostLanguage='en';await plugin.setLanguage('auto');assert.equal(plugin.commands[0].name,'Open illustration workspace');
+  hostLanguage='zh-TW';await plugin.setLanguage('auto');assert.equal(plugin.commands[0].name,'打开配图工作台');
+  plugin.saveData=async()=>{throw new Error('fixture save failure');};
+  await assert.rejects(plugin.setLanguage('en'),/fixture save failure/);assert.equal(plugin.settings.language,'auto');assert.equal(plugin.commands[0].name,'打开配图工作台');
+  plugin.view.busy=true;await assert.rejects(plugin.setLanguage('en'));assert.equal(plugin.settings.language,'auto');
+  plugin.view=null;plugin.onunload();hostLanguage='zh-CN';
+  const reloaded=new Plugin(app);reloaded.saved=persistedEnglish;await reloaded.onload();assert.equal(reloaded.commands[0].name,'Open illustration workspace');reloaded.onunload();
+});
+
+test('English labels cover built-in options while custom text, prompts and output paths remain unchanged',()=>{
+  const settings={promptTemplates:[]};let language='zh';i18n.configureLocale(()=>language,()=>hostLanguage);
+  const template=hooks.promptTemplates(settings).find(t=>t.id==='gpt-literary-painting');
+  const state={platform:'custom',customW:1600,customH:640,textLevel:'title'};
+  const title='审美不够，怎么用 AI 做出更有质感的产品？';
+  const prompt=hooks.renderTemplatePrompt(template,state,title,'A quiet scene');
+  const task=JSON.stringify(hooks.createOutputTask({},null,'配图',true));
+  language='en';assert.equal(hooks.templateLabel(template,settings),'Literary painting · Poetic space');
+  const custom={promptTemplates:[{...template,name:'文学绘画 · 留白意象',description:'保留我的原话'}]};
+  assert.equal(hooks.templateLabel(custom.promptTemplates[0],custom),'文学绘画 · 留白意象');assert.equal(hooks.templateLabel(custom.promptTemplates[0],custom,'description'),'保留我的原话');
+  assert.equal(hooks.renderTemplatePrompt(template,state,title,'A quiet scene'),prompt);assert.equal(JSON.stringify(hooks.createOutputTask({},null,'配图',true)),task);
+  for(const item of [...hooks.promptTemplates(settings),...hooks.PLATFORMS,...hooks.FIGURE_SIZES,...hooks.PALETTES,...hooks.RENDERINGS])for(const key of ['name','description','note','sourceLabel'])if(item[key]&&/[\u4e00-\u9fff]/.test(item[key]))assert.ok(Object.hasOwn(i18n.EN,item[key]),item[key]);
+  for(const [,label]of services.GROUPS)if(/[\u4e00-\u9fff]/.test(label))assert.ok(Object.hasOwn(i18n.EN,label),label);
+  for(const kind of ['text','image'])for(const provider of services.providers(kind))if(/[\u4e00-\u9fff]/.test(provider.name))assert.ok(Object.hasOwn(i18n.EN,provider.name),provider.name);
+  assert.equal(i18n.t('已读取 {count} 个模型，可选择或直接输入',{count:12}),'Loaded 12 models. Select one or enter a name.');
+  assert.equal(i18n.imageCount(1),'1 image');assert.equal(i18n.imageCount(2),'2 images');
+  assert.equal(i18n.t('未知的个人名称'),'未知的个人名称');assert.equal(i18n.t('视觉提示词需包含 {concept}，让文章构思进入画面'),'Include {concept} in the image prompt to use the article concept');
+  language='zh';assert.equal(i18n.t('构思与规划'),'构思与规划');assert.equal(i18n.imageCount(1),'1 张');assert.equal(i18n.resolveLanguage('auto','fr'),'en');assert.equal(i18n.resolveLanguage('zh','en-US'),'zh');
 });
