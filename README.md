@@ -2,7 +2,7 @@
 
 Create article-led covers and illustrations in Obsidian desktop. Choose an article, a visual template, and independent planning and image services. Preview results, export PNGs, and insert illustrations at approved locations.
 
-**Desktop only · Obsidian 1.11.4 or later · Version 0.10.1**
+**Desktop only · Obsidian 1.11.4 or later · Version 0.10.2**
 
 ## Use
 
@@ -40,9 +40,9 @@ The plugin ID remains `banana-design`, the command remains `open`, and the setti
 
 ## Install
 
-Open the official [Obsidian Community listing](https://community.obsidian.md/plugins/banana-design) and choose **Add to Obsidian**. Version 0.10.1 was published on 2026-10-19; its automated review completed with **Health: Excellent** and **Review: Satisfactory**, including a byte-for-byte reproduced build. Review warnings remain visible on the listing.
+Open the official [Obsidian Community listing](https://community.obsidian.md/plugins/banana-design) and choose **Add to Obsidian**. The initial 0.10.1 publication completed automated review on 2026-10-19 with **Health: Excellent** and **Review: Satisfactory**, including a byte-for-byte reproduced build. Those results describe 0.10.1; consult the listing for the current version's review status. GitHub Releases and marketplace review may update at different times.
 
-The published 0.10.1 `main.js` is 5,507,343 bytes; the expanded local catalog is larger. Obsidian Sync Standard cannot sync files larger than 5 MB, so install the plugin separately on each desktop if you use that plan. The release embeds the offline template previews in the standard three-file package.
+The expanded plugin bundle exceeds 5 MB. Obsidian Sync Standard cannot sync files larger than 5 MB, so install the plugin separately on each desktop if you use that plan. The release embeds the offline template previews in the standard three-file package.
 
 For a manual install, download **main.js**, **manifest.json** and **styles.css** from the matching [GitHub Release](https://github.com/TreyDong/banana-design/releases) and place them in `<vault>/.obsidian/plugins/banana-design/`. Enable Banana Design in Community plugins. Do not copy source folders or any other person's `data.json` into the vault.
 
@@ -83,19 +83,21 @@ Tests cover standalone three-file installation, migration, source/marker ownersh
 
 The engraving template is a style reference; its AI-generated generic preview is not Dan Koe's artwork and implies no endorsement. Custom user assets are not bundled. This is an independent community plugin, not an official Obsidian, Qiaomu, OpenAI or Dan Koe product.
 
-## Expanded local template catalog
+## Template catalog
 
-The local source adds 15 article-led recipes to the existing 3. They cover conceptual typography, paper, watercolor, diagrams, cinematic scenes, lifestyle photography, ink, still life, human narrative, opinion collage and literary painting. Covers and body illustrations have separate prompts, independent dimensions and saved custom overrides. The source link appears in the template library when selected. Body previews are labeled **layout studies**; the seven sampled cover directions use actual generated-cover previews.
+The catalog includes 18 templates. They cover conceptual typography, paper, watercolor, diagrams, cinematic scenes, lifestyle photography, ink, still life, human narrative, opinion collage and literary painting. Covers and body illustrations have separate prompts, independent dimensions and saved custom overrides. The source link appears in the template library when selected. Body previews are labeled **layout studies**; the seven sampled cover directions use actual generated-cover previews.
 
-The original category recipes are informed by a popular GPT Image repository's documented categories and production rules. The four new editorial directions use independently written rules informed by real publication-design references. Repository stars and article views are not per-template use counts or proof of a cover's causal effect. No runtime reference-site request or fixed image provider is added. See [template sources and attribution](THIRD_PARTY_NOTICES.md#awesome-gpt-image-template-research) and the source links in [the catalog](src/templates/catalog.js). This local addition has not been published as a new community Release.
+The original category recipes are informed by a popular GPT Image repository's documented categories and production rules. The four newer editorial directions use independently written rules informed by real publication-design references. Repository stars and article views are not per-template use counts or proof of a cover's causal effect. No runtime reference-site request or fixed image provider is added. See [template sources and attribution](THIRD_PARTY_NOTICES.md#awesome-gpt-image-template-research) and the source links in [the catalog](src/templates/catalog.js). The expanded catalog is packaged in version 0.10.2.
 
 ## Changes
 
-### Interface languages — unreleased
+### 0.10.2 — 2026-10-20
 
 - Added an interface language setting with automatic, Simplified Chinese and English modes, including settings help, workspace controls, template descriptions, model dialogs and authored status/error messages.
 - Language changes persist and refresh the workspace. User-authored content, template instructions, saved image names and paths retain their original wording. Language changes are disabled during active generation or insertion.
-- Validation: all 15 regression checks pass, including saved language choices, automatic host-language selection, save-failure rollback, custom template text and unchanged generation prompts/output paths. Native Obsidian 1.14.4 checks covered Chinese/English settings, model forms, workspace tabs and template descriptions, plus persistence across plugin reload. The local installation is updated; this change has not been published as a new Release.
+- Added article-led visual recipes with seven original generated-cover previews, including human narrative, opinion collage, quiet lifestyle photography and literary painting; refined headline weight, emphasis and alignment.
+- Kept explanatory diagrams in the illustration library while preserving active selections and saved custom templates. Simplified provider cards to names and aligned marks.
+- Validation: all 15 regression checks pass, including saved language choices, automatic host-language selection, save-failure rollback, custom template text and unchanged generation prompts/output paths. Native Obsidian 1.14.4 checks covered Chinese/English settings, model forms, workspace tabs and template descriptions, plus persistence across plugin reload.
 
 ### Source organization — 2026-10-20
 

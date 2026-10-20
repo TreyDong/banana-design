@@ -12,7 +12,7 @@ const figures = require('../src/illustrations/figure-agent.js');
 const i18n = require('../src/i18n.js');
 let hostLanguage = 'zh-CN';
 class HostPlugin {
-  constructor(app) { this.app = app; this.manifest = {id:'banana-design',version:'0.10.1',dir:'.obsidian/plugins/banana-design'}; this.commands=[]; }
+  constructor(app) { this.app = app; this.manifest = {id:'banana-design',version:'0.10.2',dir:'.obsidian/plugins/banana-design'}; this.commands=[]; }
   async loadData() { return this.saved || null; }
   async saveData(data) { this.saved = data; }
   registerView(type,factory) { this.factory=factory; }
