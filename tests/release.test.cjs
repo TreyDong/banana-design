@@ -7,8 +7,8 @@ const vm = require('node:vm');
 const http = require('node:http');
 const {createRequire} = require('node:module');
 const root = path.resolve(__dirname, '..');
-const services = require('../src/model-services.js');
-const figures = require('../src/figure-agent.js');
+const services = require('../src/services/model-services.js');
+const figures = require('../src/illustrations/figure-agent.js');
 class HostPlugin {
   constructor(app) { this.app = app; this.manifest = {id:'banana-design',version:'0.10.1',dir:'.obsidian/plugins/banana-design'}; this.commands=[]; }
   async loadData() { return this.saved || null; }
@@ -128,7 +128,7 @@ test('template dialogs preserve the host keyboard scope when opened for covers o
 
 
 test('new article recipes render chosen dimensions and keep cover titles out of body illustrations',()=>{
-  const {EXTRA_TEMPLATES}=require('../src/template-catalog.js');
+  const {EXTRA_TEMPLATES}=require('../src/templates/catalog.js');
   assert.equal(EXTRA_TEMPLATES.length,15);
   for(const template of EXTRA_TEMPLATES){
     const state={platform:'custom',customW:1600,customH:640,textLevel:'title'};

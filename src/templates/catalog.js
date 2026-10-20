@@ -1,5 +1,5 @@
 // Article-led recipes informed by the cited public template categories.
-// See notes/template-catalog.md and THIRD_PARTY_NOTICES.md. Body previews are layout diagrams; validated cover directions use generated samples.
+// See THIRD_PARTY_NOTICES.md for sources and attribution. Body previews are layout diagrams; validated cover directions use generated samples.
 const SOURCE_BASE = "https://github.com/freestylefly/awesome-gpt-image-2/blob/63e6176fa01be51c000108dacd72716d3e46784b/docs/templates.md#tpl-";
 const RECIPES = [
   [

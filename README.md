@@ -53,9 +53,26 @@ npm ci
 npm run check
 ```
 
-Source is in `src/`, with preview assets in `assets/`. `build.mjs` creates an unminified CommonJS `main.js`, embeds both previews and third-party notices, and leaves Obsidian as a host dependency. Upload `main.js`, `manifest.json`, and `styles.css` as Release assets under a tag exactly matching the manifest version, without a `v` prefix. Compiled output and `node_modules` are excluded from source Git.
+The project separates source modules, build tooling, tests and preview assets:
 
-Tests cover standalone three-file installation, migration, source/marker ownership, no append fallback, path traversal and symlink rejection, local API context, cancellation and key redaction. See [engineering notes](notes/README.md) for the original snapshot fingerprints and verification limits. Mock tests do not certify access to every provider or platform.
+```text
+src/
+  main.js                      Plugin entry, workspace and settings
+  services/model-services.js   Model connections and provider protocols
+  illustrations/figure-agent.js Article planning, anchors and insertion
+  rendering/cover-layout.js    Local cover rendering
+  templates/catalog.js         Cover and illustration recipes
+scripts/build.mjs              Bundle and embed previews and notices
+tests/release.test.cjs          Release and behavior regression tests
+assets/                        Offline preview images and type studies
+manifest.json                  Obsidian plugin metadata
+versions.json                  Version compatibility
+styles.css                     Plugin styles
+```
+
+`npm run build` runs `scripts/build.mjs` to create an unminified CommonJS `main.js` in the project root, embeds previews and third-party notices, and leaves Obsidian as a host dependency. Upload `main.js`, `manifest.json`, and `styles.css` as Release assets under a tag exactly matching the manifest version, without a `v` prefix. Compiled output and `node_modules` are excluded from source Git.
+
+Tests cover standalone three-file installation, migration, source/marker ownership, no append fallback, path traversal and symlink rejection, local API context, cancellation and key redaction. Mock tests do not certify access to every provider or platform. Publication checks used synthetic fixtures on Obsidian 1.14.4 for macOS; they do not establish Windows/Linux or minimum-version compatibility, or access to paid providers.
 
 ## License and credits
 
@@ -67,9 +84,15 @@ The engraving template is a style reference; its AI-generated generic preview is
 
 The local source adds 15 article-led recipes to the existing 3. They cover conceptual typography, paper, watercolor, diagrams, cinematic scenes, lifestyle photography, ink, still life, human narrative, opinion collage and literary painting. Covers and body illustrations have separate prompts, independent dimensions and saved custom overrides. The source link appears in the template library when selected. Body previews are labeled **layout studies**; the seven sampled cover directions use actual generated-cover previews.
 
-The original category recipes are informed by a popular GPT Image repository's documented categories and production rules. The four new editorial directions use independently written rules informed by real publication-design references. Repository stars and article views are not per-template use counts or proof of a cover's causal effect. No runtime reference-site request or fixed image provider is added. See [catalog sources and scope](notes/template-catalog.md) and [editorial directions and AttentionVC cover analysis](notes/editorial-cover-research-2026-10-20.md). This local addition has not been published as a new community Release.
+The original category recipes are informed by a popular GPT Image repository's documented categories and production rules. The four new editorial directions use independently written rules informed by real publication-design references. Repository stars and article views are not per-template use counts or proof of a cover's causal effect. No runtime reference-site request or fixed image provider is added. See [template sources and attribution](THIRD_PARTY_NOTICES.md#awesome-gpt-image-template-research) and the source links in [the catalog](src/templates/catalog.js). This local addition has not been published as a new community Release.
 
 ## Changes
+
+### Source organization — 2026-10-20
+
+- Grouped model services, article illustrations, local rendering and templates under their respective `src/` directories; moved build tooling into `scripts/` and updated imports and tests.
+- Removed the engineering process directory at the author's request. Source references and full license notices remain in `THIRD_PARTY_NOTICES.md`; earlier process records remain available in Git history at commit `0b45996e61c8115230a51abf7c9d78096b06dbc3`.
+- This is a source organization change. The three-file installation format, version, plugin behavior and user data schema are unchanged.
 
 ### 0.10.1
 
@@ -83,4 +106,4 @@ The original category recipes are informed by a popular GPT Image repository's d
 
 The cover library includes the existing blank, engraving and neon layouts plus seven generated-cover directions: conceptual paper typography, cinematic spatial storytelling, tactile metaphorical still life, human narrative, opinion collage, quiet lifestyle photography and literary painting. Their offline previews are actual generated covers, using the same example article title. Each selected article supplies a new scene; the sample person, object and setting are not imposed on later covers. The four newer directions also support title-free images; the selected text rule takes priority over typography guidance.
 
-Process, comparison, scale and other diagram recipes remain available in the article-illustration library. Existing active choices and saved user customizations remain accessible. A sample demonstrates one generated result, not a guarantee that every model produces an identical image. Source prompts, sample evidence and validation status are in [the template notes](notes/template-catalog.md).
+Process, comparison, scale and other diagram recipes remain available in the article-illustration library. Existing active choices and saved user customizations remain accessible. A sample demonstrates one generated result, not a guarantee that every model produces an identical image. Current reusable prompts are in [the catalog](src/templates/catalog.js), with offline samples in `assets/` and regression coverage in `tests/`.

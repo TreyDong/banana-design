@@ -364,7 +364,7 @@ const MODULES = {
 function byId(list, id) { return list.find((x) => x.id === id) || list[0]; }
 
 /* A recipe plans a new subject from each article, then supplies stable image rules. */
-const { EXTRA_TEMPLATES } = require('./template-catalog');
+const { EXTRA_TEMPLATES } = require('./templates/catalog');
 const PROMPT_TEMPLATES = [{
   id: 'dan-koe', name: 'Dan Koe · 黑白蚀刻', previewAsset: 'dan-koe', titleTreatment: 'scene-integrated',
   figurePlanningPrompt: '用黑白木刻与铜版蚀刻的视觉语言设计正文配图。根据每处正文观点，选择具体人物动作、环境关系或清晰的结构与对比，统一细密刻线、排线与明暗层次。场景图有空间深度，说明图优先可读性。只使用帮助理解当前段落的少量短标签，不放文章标题，不照搬封面的中央大字布局。',
@@ -2060,9 +2060,9 @@ const DEFAULTS = { codexPath: '', outputFolder: DEFAULT_OUTPUT_FOLDER, taskFolde
 module.exports = class BananaDesignPlugin extends Plugin {
   async onload() {
     document.getElementById('bd-styles')?.remove();
-    this.layout = require('./cover-layout.js');
-    this.figureAgent = require('./figure-agent.js');
-    this.services = require('./model-services.js');
+    this.layout = require('./rendering/cover-layout.js');
+    this.figureAgent = require('./illustrations/figure-agent.js');
+    this.services = require('./services/model-services.js');
     const savedSettings = await this.loadData() || {};
     this.settings = Object.assign({}, DEFAULTS, savedSettings);
     if (!savedSettings.outputFolder) this.settings.outputFolder = DEFAULT_OUTPUT_FOLDER;
