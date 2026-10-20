@@ -367,6 +367,13 @@ function byId(list, id) { return list.find((x) => x.id === id) || list[0]; }
 /* A recipe plans a new subject from each article, then supplies stable image rules. */
 const { EXTRA_TEMPLATES } = require('./templates/catalog');
 const PROMPT_TEMPLATES = [{
+  id: 'blank', name: '空白模板', titleTreatment: 'adaptive',
+  figurePlanningPrompt: '根据当前段落内容与用户要求选择适合的正文视觉表达，不预设画风或固定布局。统一整批视觉语言，重点是帮助读者理解观点。',
+  figurePrompt: 'Create a polished article-body illustration from this creative brief.\nCreative brief: {concept}\nFollow the requested scene and shared visual language without importing a preset style or fixed cover layout.\nCanvas: {width} x {height} px, aspect ratio {ratio}, with safe margins.\n{text_rule}\nNo article headline, logos, watermarks or unrelated decoration.',
+  planningPrompt: '阅读文章，根据正文观点与用户本次要求构思当前单张封面。不预设画风、配色、主体或固定布局；用户指定的风格与构图优先。用一个明确、有正文依据的视觉场景表达观点，英文 scene 包含可绘制的主体、构图和本次选择的视觉处理，不包含实际标题文字。',
+  imagePrompt: 'Create a polished article cover from this creative brief.\nCreative brief: {concept}\nDo not import a preset engraving style, neon palette, fixed subject or stock layout. Follow the user request and the creative brief.\nCanvas: {width} x {height} px, aspect ratio {ratio}. Compose for this exact canvas with safe margins.\n{text_rule}\nNo logos, watermarks or unrelated decoration.',
+  defaults: { textLevel: 'title' },
+}, {
   id: 'dan-koe', name: 'Dan Koe · 黑白蚀刻', previewAsset: 'dan-koe', titleTreatment: 'scene-integrated',
   figurePlanningPrompt: '用黑白木刻与铜版蚀刻的视觉语言设计正文配图。根据每处正文观点，选择具体人物动作、环境关系或清晰的结构与对比，统一细密刻线、排线与明暗层次。场景图有空间深度，说明图优先可读性。只使用帮助理解当前段落的少量短标签，不放文章标题，不照搬封面的中央大字布局。',
   figurePrompt: 'Create an editorial article-body illustration.\nScene: {concept}\nStrictly monochrome black and white, nineteenth-century wood engraving and copperplate etching. Fine carved linework, cross-hatching, stippling, tactile depth and dramatic chiaroscuro. Build a coherent narrative scene or clear explanatory diagram, as requested by the scene. Preserve visual hierarchy and readable relationships.\nCanvas: {width} x {height} px, aspect ratio {ratio}, with safe margins.\n{text_rule}\nNo cover headline, logos, watermarks, color, neon, gradients, smooth 3D rendering or unrelated decoration.',
@@ -379,13 +386,6 @@ const PROMPT_TEMPLATES = [{
   figurePrompt: 'Create a polished article-body graphic.\nScene: {concept}\nUse charcoal black, crisp white and vivid lime green accents. Strong hierarchy, clear geometric structure and restrained information cards or scene elements suited to the current paragraph. Highlight only the essential relationship; avoid a crowded cover layout or a sales dashboard.\nCanvas: {width} x {height} px, aspect ratio {ratio}, with safe margins.\n{text_rule}\nNo article headline, fabricated metrics, logos, watermarks or unrelated decoration.',
   planningPrompt: '阅读文章，提炼能由正文支持的封面文案。标题可分2至3行，直白有力；选一个连续的强调词。右侧卡片展示文章中的方法或对比，底部3个要点。每项短小，观点准确。不得编造涨粉、收入、百分比、成效或客户评价；正文没有数字就不用数据图表。只策划文案，不描述图像场景。',
   imagePrompt: '', defaults: { textLevel: 'title' },
-}, {
-  id: 'blank', name: '空白模板', titleTreatment: 'adaptive',
-  figurePlanningPrompt: '根据当前段落内容与用户要求选择适合的正文视觉表达，不预设画风或固定布局。统一整批视觉语言，重点是帮助读者理解观点。',
-  figurePrompt: 'Create a polished article-body illustration from this creative brief.\nCreative brief: {concept}\nFollow the requested scene and shared visual language without importing a preset style or fixed cover layout.\nCanvas: {width} x {height} px, aspect ratio {ratio}, with safe margins.\n{text_rule}\nNo article headline, logos, watermarks or unrelated decoration.',
-  planningPrompt: '阅读文章，根据正文观点与用户本次要求构思当前单张封面。不预设画风、配色、主体或固定布局；用户指定的风格与构图优先。用一个明确、有正文依据的视觉场景表达观点，英文 scene 包含可绘制的主体、构图和本次选择的视觉处理，不包含实际标题文字。',
-  imagePrompt: 'Create a polished article cover from this creative brief.\nCreative brief: {concept}\nDo not import a preset engraving style, neon palette, fixed subject or stock layout. Follow the user request and the creative brief.\nCanvas: {width} x {height} px, aspect ratio {ratio}. Compose for this exact canvas with safe margins.\n{text_rule}\nNo logos, watermarks or unrelated decoration.',
-  defaults: { textLevel: 'title' },
 }, ...EXTRA_TEMPLATES];
 function promptTemplates(settings) {
   const overrides = Array.isArray(settings.promptTemplates) ? settings.promptTemplates.filter(t => t && typeof t.id === 'string' && typeof t.name === 'string' && typeof t.planningPrompt === 'string' && typeof t.imagePrompt === 'string') : [];
