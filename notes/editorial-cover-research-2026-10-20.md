@@ -164,6 +164,51 @@ No other words, logo, masthead, subtitle, fabricated date or byline, quote, wate
 
 ### 验证状态
 
-本轮构建成功，13 项回归检查通过；覆盖 10 种默认封面选择、18 种正文配图选择、自定义覆盖和旧 ID、无字模式、任意尺寸、正文不带封面标题，以及在仅有三个发布文件的临时安装目录中加载全部 7 个 WebP 封面预览。源代码没有新增第三方图片下载或参考站运行时请求。个人 Obsidian 界面验收仍按用户先前要求稍后进行；当前安装和公开 Release 未替换。本地 bundle 当前为 6,527,458 字节，仍超过此前已知的 Standard Sync 5 MB 限制。
+本轮构建成功，13 项回归检查通过；覆盖 10 种默认封面选择、18 种正文配图选择、自定义覆盖和旧 ID、无字模式、任意尺寸、正文不带封面标题，以及在仅有三个发布文件的临时安装目录中加载全部 7 个 WebP 封面预览。源代码没有新增第三方图片下载或参考站运行时请求。个人 Obsidian 界面验收仍按用户先前要求稍后进行；当前安装和公开 Release 未替换。当时的本地 bundle 为 6,527,458 字节，仍超过此前已知的 Standard Sync 5 MB 限制。
 
+## 文字排版校正 — 用户确认画面都可保留
 
+用户明确反馈“都还行，文字不太行”。问题聚焦于文字，不将它解释为需要重做画面或改写标题。对同一幅文学绘画原图使用内置 imagegen 的参考图编辑模式，保留场景、主体和画风，仅请求重排文字。生成编辑仍可能带来细微笔触变化，因此不声称像素级背景完全一致。
+
+- [A：现代编辑横排](../assets/typography-magazine-study.webp)：现代黑体，缩小引题，主句分为两行并加强层级，中英文重量更一致。
+- [B：文学书封竖排](../assets/typography-literary-study.webp)：三列从右至左，主次区分，收窄文字占据的区域。竖排仅是对比方向，不自动成为文学模板默认值。
+
+两版已逐字检查，均保留“审美不够，怎么用 AI 做出更有质感的产品？”完整标题、阅读顺序和标点，未增添副标题。它们是待用户评价的排版探索，不声称用户已经认可哪一版，也未替换现有默认预览。
+
+四种新编辑模板的策划和生成规则已增加：按语义分组和区分主次，字体与画风匹配，中英文字形与重量协调，控制字距、行距和文字占比；避免所有封面都套相同字号的三行大字。原有三种成图方向、三个基础模板、正文规则和用户自定义覆盖不作此轮改动。默认横排，竖排需要用户明确要求；无字开关仍优先。没有新增布局控件或安装操作。
+
+### A 实际编辑提示词
+
+```text
+Use case: text-localization.
+Edit target: the provided blue-hour painterly seaside article cover.
+Change ONLY its typography. Preserve the complete painted scene: same person, pose, paper aperture, houses, light, sea, brushwork, palette and framing. Reconstruct the water behind removed letters in the same brushwork; do not redraw or reinterpret the illustration. Keep the exact 2.35:1 landscape aspect ratio.
+The user likes the imagery but dislikes the current large generic Songti title and its equal-size three-line block.
+Typography direction A: contemporary editorial magazine, confident but refined modern Chinese sans-serif (humanist Heiti, substantial medium-bold to bold, crisp optical spacing). Chinese and Latin AI must share the same contemporary type family and weight; no Times New Roman Latin mixed with Chinese serif.
+Remove ALL existing lettering and set the exact complete title with a deliberate two-level hierarchy:
+Small lead-in line: 审美不够，
+Main line 1: 怎么用 AI 做出
+Main line 2: 更有质感的产品？
+Keep these words and punctuation exactly, in this reading order. No paraphrase, omission or added words.
+Composition: left text group, about 6.5% inset, slightly below vertical center of the empty left sea area. Main headline about 5% of canvas width in cap/character height, lead-in about 45% of that size. Main lines close, measured line spacing about 1.15; slightly more breathing room between lead-in and headline. Text occupies roughly 43–46% canvas width and 30–35% canvas height, significantly less than the original huge title block. All left-aligned with a clear optical edge. Comfortable quiet space surrounds the block; let the painting remain visible. Main weight carries the idea, lead-in is visibly secondary, avoid a short giant first line.
+Color warm ivory, high legibility against the original deep blue. No text panels, outlines, shadow, gradient lettering, decorative underline, rules, pill badges, all-caps extra copy, publication name, date, logo or watermark. Render one complete edited cover, not a side-by-side comparison.
+```
+
+### B 实际编辑提示词
+
+```text
+Use case: text-localization.
+Edit target: the provided original blue painterly seaside article cover.
+Change ONLY the lettering and its arrangement. Preserve the illustration's person, posture, coat, paper aperture, houses, sunset, blue sea, rocks, palette, brushwork and whole wide framing. Remove all original lettering, restoring the underlying sea in the same painted style. Do not redesign, crop, add objects or reinterpret the scene. Keep landscape aspect ratio 2.35:1.
+Typography direction B: restrained literary BOOK COVER, a careful vertical Chinese typographic composition, not a corporate headline block. The illustration should have substantially more breathing room and visual presence than the previous huge three-line horizontal title.
+Set the FULL original title, exactly:
+审美不够，怎么用 AI 做出更有质感的产品？
+No rewritten copy, no omissions, no new words or added punctuation.
+Use three vertical columns, read right to left, each column top to bottom:
+Right column: 审美不够，
+Middle column: 怎么用 AI 做出
+Left column: 更有质感的产品？
+The right column is a quieter lead-in, about 60% the size of the other two columns. The two main columns are elegant robust contemporary Chinese Song / humanist serif with moderate stroke contrast, finely drawn but readable, neither hairline nor calligraphy. Warm ivory type, no effects. Set AI upright as one horizontal Latin unit within the middle column, optically matched to the Chinese character size; do not split or rotate A and I. Chinese punctuation must use correct vertical placement. Natural carefully measured vertical character spacing and generous column spacing.
+Placement: left half of the sea; main columns around x=12% and x=24% of canvas, small lead-in around x=35%. Shared top optical anchor at about 17% canvas height. Main character height approximately 7–8% canvas height; longest column fits comfortably above 86% canvas height. Total type uses only about the left third of the canvas, not half the image. Keep comfortable edge margins, no image occlusion, no separate text panel.
+The effect must feel deliberate, calm, cultured, like a contemporary Chinese literary jacket. No title-sized equal-weight preamble, default office-document appearance, underlines, border, artificial texture on letters, publisher name, cover badge, logo, extra subtitle, date, byline or watermark. Output one complete edited cover, not a comparison or mockup.
+```

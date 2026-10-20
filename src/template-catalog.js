@@ -224,6 +224,8 @@ const COVER_DIRECTIONS = {
   }
 };
 const ARTICLE_RULES = '从当前文章提取一个有依据的观点和可绘制主体。尊重用户指定画幅，不固定为竖版海报。不得编造数字、收益、评价、引语或文章未支持的事实；资料不足时少放标签。每次只策划一张，多个候选改变核心场景而不只换颜色。';
+const EDITORIAL_TYPE_IDS = new Set(['gpt-human-narrative', 'gpt-opinion-collage', 'gpt-documentary-lens', 'gpt-literary-painting']);
+const EDITORIAL_TYPE_RULES = 'When text is requested, art-direct the typography separately from the illustration. Read the exact title for semantic groups and give it a deliberate hierarchy: a premise or lead-in may be smaller, while the main claim has greater weight. Preserve the full wording and punctuation in natural reading order; never invent a subtitle or isolate a short grammatical fragment just to fill a line. Avoid the same huge equal-weight three-line block on every cover. Match type weight, proportion, color and placement to the visual medium; default to a readable horizontal editorial arrangement, using vertical text only when explicitly requested. Keep Latin AI and other Latin words optically consistent with the Chinese type rather than mixing unrelated default fonts. Use measured tracking, optical alignment, balanced line lengths and comfortable line spacing; keep the words subordinate to a considered image-text relationship instead of filling all available negative space. No thin oversized office-document Songti, decorative outlines, drop shadows, stretching or arbitrary multi-color lettering. Respect an explicit user typography request over these defaults. For text-free images none of these typography instructions apply.';
 const EXTRA_TEMPLATES = RECIPES.map(([id,name,description,category,kind,bg,ink,accent,planning,visual]) => ({
   id: 'gpt-'+id, name, description, titleTreatment: 'adaptive',
   sourceUrl: SOURCE_BASE+category, sourceLabel: 'Awesome GPT Image · 分类参考',
@@ -239,8 +241,8 @@ const EXTRA_TEMPLATES = RECIPES.map(([id,name,description,category,kind,bg,ink,a
   return { ...template, name: direction.name, description: direction.description,
     sourceUrl: direction.sourceUrl || template.sourceUrl, sourceLabel: direction.sourceLabel || template.sourceLabel,
     coverReady: true, coverPreviewAsset: direction.preview, coverPreviewKind: 'generated-sample',
-    planningPrompt: ARTICLE_RULES + direction.planning + '严格遵守当前文字开关；仅在要求文字时使用用户完整标题，不添加虚构副标题。用英文给出可绘制的场景。',
-    imagePrompt: 'Create one finished premium editorial article cover.\nScene: {concept}\n' + direction.art + '\nCanvas: {width} x {height} px, aspect ratio {ratio}. Compose the entire cover specifically for this ratio with 6 percent safe margins; never crop a taller poster.\n{text_rule}\nThe text rule above takes absolute priority over any headline or typographic styling guidance: when it requests no text, render only the visual scene without lettering. Never reproduce the example subject by default.\nNo added bylines, unsupported subtitles, watermarks, signatures, fake metrics, brands, contact sheets or reference-site UI.'
+    planningPrompt: ARTICLE_RULES + direction.planning + (EDITORIAL_TYPE_IDS.has(template.id) ? '文字开启时单独规划字体气质、语义断行和主次层级；不要把所有标题都变成相同字号的三行左侧大字，不为凑版面改写原文。默认横排，竖排仅在用户明确要求时采用。' : '') + '严格遵守当前文字开关；仅在要求文字时使用用户完整标题，不添加虚构副标题。用英文给出可绘制的场景。',
+    imagePrompt: 'Create one finished premium editorial article cover.\nScene: {concept}\n' + direction.art + (EDITORIAL_TYPE_IDS.has(template.id) ? '\n' + EDITORIAL_TYPE_RULES : '') + '\nCanvas: {width} x {height} px, aspect ratio {ratio}. Compose the entire cover specifically for this ratio with 6 percent safe margins; never crop a taller poster.\n{text_rule}\nThe text rule above takes absolute priority over any headline or typographic styling guidance: when it requests no text, render only the visual scene without lettering. Never reproduce the example subject by default.\nNo added bylines, unsupported subtitles, watermarks, signatures, fake metrics, brands, contact sheets or reference-site UI.'
   };
 });
 module.exports = { EXTRA_TEMPLATES };
