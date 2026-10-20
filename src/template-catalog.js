@@ -145,6 +145,24 @@ const RECIPES = [
     "#b37d46",
     "选择文章中有依据的一个物件或有清楚解释的物件变形，写明它怎样呈现观点；不要凭空添加品牌、卖点或价格。",
     "Premium editorial still life, one thoughtfully transformed physical object, tactile material detail, sculptural side light, subtle grounded shadow, restrained warm neutral backdrop with muted teal. Concept-led rather than generic e-commerce display; no brand logos, pricing or sales claims."
+  ],
+  [
+    "human-narrative", "人物叙事 · 手绘编辑", "用人物动作、情绪与环境讲述经历",
+    "illustration", "photo", "#f3dfc4", "#183e78", "#d56a32",
+    "从当前段落提取一个有依据的人物行为，说明动作、视线、情绪及环境的关系。人物不是装饰小剪影，不固定为工作室、女性或举色纸。",
+    "Mature editorial gouache and colored-pencil illustration, expressive human posture and gaze, confident overpaint, imperfect edges and fine print grain. One observed human moment within a coherent environment, considered ultramarine and warm earth colors, natural light and atmospheric depth. No generic corporate characters or unrelated teaching icons."
+  ],
+  [
+    "opinion-collage", "观点拼贴 · 视觉评论", "用裁切、尺度反差与强色表达观点",
+    "poster", "type", "#f3eadb", "#191c23", "#e04427",
+    "先提炼正文立场，再选择两到三个有明确关系的图像片段，通过裁切、尺度、遮挡或形状呼应表达。每个片段都必须服务同一个观点；不固定为眼睛、手或色卡。",
+    "Art-directed editorial collage with two or three meaningfully connected photographic fragments and tactile torn-paper shapes, sharp scale contrast, restrained monochrome plus one or two bold spot colors, halftone and paper fibers. One unified visual argument, not a random moodboard, card grid or collection of stickers."
+  ],
+  [
+    "literary-painting", "文学绘画 · 留白意象", "适合随笔、阅读与情绪表达",
+    "illustration", "watercolor", "#e9d5ba", "#253e64", "#c77b3d",
+    "从正文的情绪、处境或观察提炼一个独立绘画意象，以人物、环境或光色关系承载意味，不逐条图解全文。地点、动作和配色随文章变化，不固定为海边、橙色外套或纸框。",
+    "Poetic literary editorial painting in layered gouache and oil pastel, expressive confident brushwork, atmospheric color masses, tactile pigment and warm printed-paper grain. One evocative human or environmental relationship, emotional depth and restrained detail, deliberate open space. No diagram, glossy CGI, clip-art symbols or copied masterwork."
   ]
 ];
 function previewSvg(kind, bg, ink, accent) {
@@ -175,6 +193,30 @@ const COVER_DIRECTIONS = {
     planning: '将文章的一个观点变成正在发生的具体事件，明确人物在观察或改变什么，环境如何参与。给出前景、中景动作和远景，以及一个主光源；为标题规划安静、完整的明暗区域。人物、环境与行动随文章变化，不固定成展厅或某件雕塑。',
     art: 'A cinematic editorial scene with a specific relationship among protagonist, meaningful object and environment. Deep foreground shadow, convincing middle-ground action and a readable distant space; strong perspective and finely observed tactile material. Controlled amber directional light and charcoal shadows, coherent atmospheric depth, premium film-still quality. Integrate the complete headline prominently into a calm shadow plane with elegant warm-white display typography, legible at thumbnail size. Adapt placement to the scene rather than attaching a tiny corner caption. No cyberpunk neon, HUD, diagram boxes, sales cards or floating abstract props.'
   },
+  'gpt-human-narrative': {
+    name: '人物叙事 · 手绘编辑', description: '人物、动作与情绪，让封面更有温度', preview: 'gpt-human-narrative',
+    sourceUrl: 'https://www.newyorker.com/culture/cover-story/cover-story-2022-07-25', sourceLabel: '编辑叙事 · 设计参考',
+    planning: '从文章选择一个有依据的人物行为或处境，明确人物在做什么、看向哪里，以及环境如何参与。写出一个主要动作、可信的表情与手部、前中后景和自然光。人物要可见且有表现力；不固定为工作室、某个性别或举色纸。标题开启时规划安静、对比清楚的区域。',
+    art: 'Mature hand-painted editorial gouache and colored pencil, expressive human presence with convincing gesture, gaze and hands, one meaningful observed moment rather than an explanatory mechanism. Confident shapes, subtle overpaint, imperfect edges, tactile printed-ink grain, coherent foreground, middle ground and background. A considered palette with rich ultramarine and warm earth accents adapted to the article. When text is requested, use substantial modern Chinese sans-serif typography in a calm part of the continuous scene, with optical spacing and natural line breaks. No generic corporate illustration, tiny decorative person, cute mascot, tutorial arrows or unrelated icons.'
+  },
+  'gpt-opinion-collage': {
+    name: '观点拼贴 · 视觉评论', description: '裁切、尺度与强色，让观点更鲜明', preview: 'gpt-opinion-collage',
+    sourceUrl: 'https://www.pentagram.com/work/tablet-magazine', sourceLabel: '编辑拼贴 · 设计参考',
+    planning: '先用一句话写清文章立场，再选择两到三个有明确关系的视觉片段，写明裁切、尺度反差或遮挡怎样表达该观点。保留一个焦点，避免素材板和多张小卡。主体随文章变化，不固定为眼睛、手和色卡；不冒用他人肖像、品牌或刊名。',
+    art: 'A bold cultured editorial photo-and-paper collage expressing one clear visual argument. Two or three related fragments, radical yet controlled crop and scale, deliberate overlap, monochrome photography with one or two strong spot colors, visible paper fibers, scissor contours and coarse photographic halftone. Asymmetrical tension and a unified composition, not a moodboard or grid. When requested, set the complete headline in large assured modern Chinese grotesk, carefully spaced in quiet negative space. No unrelated fragments, fake charts, medical diagrams, stock business presentation, publication marks or arbitrary slogans.'
+  },
+  'gpt-documentary-lens': {
+    name: '生活摄影 · 安静纪实', description: '自然光、生活痕迹与克制的排版', preview: 'gpt-quiet-photo',
+    sourceUrl: 'https://alexhunting.studio/pages/about', sourceLabel: '生活摄影 · 编辑设计参考',
+    planning: '从文章选择可观察的生活动作、人物或环境痕迹，说明人物与物件的关系、镜头距离、自然光和留白。不把生成场景当新闻证据，不编造真人经历；不固定为桌面、手部或纸样，不堆满装饰道具。标题开启时利用真实明暗与安静区域。',
+    art: 'Quiet editorial lifestyle photography, candid close observation, natural 35mm perspective, plausible daylight and soft shadows, everyday material wear and fine restrained film grain. One unforced human action or meaningful environmental detail, muted colors with a subtle warm accent, deliberate negative space and coherent depth. When text is requested, use confident, legible contemporary editorial typography placed in a naturally calm region with no opaque card. No sterile luxury showroom, stock business handshake, overprocessed sepia, elaborate props, fake screenshots or fabricated documentary evidence.'
+  },
+  'gpt-literary-painting': {
+    name: '文学绘画 · 留白意象', description: '用光色、笔触与一个意象表达感受', preview: 'gpt-literary-painting',
+    sourceUrl: 'https://www.pentagram.com/work/the-paris-review', sourceLabel: '文学艺术 · 编辑设计参考',
+    planning: '提炼文章情绪、处境或观察，选择一个有意味的绘画场景，让光色、人物与环境的关系承载感受。不是逐条解释全文。给出一处视觉转折和清楚焦点，地点、动作及配色随文章变化，不固定为海边、橙色外套和纸框。根据当前画幅重新构图，标题开启时保留足够对比。',
+    art: 'A poetic original literary editorial painting, layered gouache and oil pastel, rich atmospheric color masses, expressive confident brushwork, imperfect pigment edges and tactile printed-paper grain. A single evocative human or environmental relationship, emotional depth and deliberate open space rather than an explanatory diagram. Adapt colors and subject to the article, not the sample scene. When text is requested, compose the full headline with assured contemporary Chinese serif typography, strong thumbnail readability and thoughtful line breaks. No glossy CGI, corporate clip art, technical labels, decorative stickers, borrowed publication identity or copied painting.'
+  },
   'gpt-object-editorial': {
     name: '质感静物 · 物件隐喻', description: '一个有意义的物件，材质与文字共同表达', preview: 'gpt-object-editorial',
     planning: '从文章核心观点选择一个可以解释的物件及其变化，写明粗糙与精细、内外或前后的关系为何有正文依据。只保留一个主体，说明材质、可见结构、接触阴影和标题留白。不要每次都使用石膏方块，也不要添加正文没有的品牌或卖点。',
@@ -195,9 +237,10 @@ const EXTRA_TEMPLATES = RECIPES.map(([id,name,description,category,kind,bg,ink,a
   const direction = COVER_DIRECTIONS[template.id];
   if (!direction) return { ...template, coverReady: false };
   return { ...template, name: direction.name, description: direction.description,
+    sourceUrl: direction.sourceUrl || template.sourceUrl, sourceLabel: direction.sourceLabel || template.sourceLabel,
     coverReady: true, coverPreviewAsset: direction.preview, coverPreviewKind: 'generated-sample',
-    planningPrompt: ARTICLE_RULES + direction.planning + '封面只使用用户完整标题，不添加虚构副标题。用英文给出可绘制的场景。',
-    imagePrompt: 'Create one finished premium editorial article cover.\nScene: {concept}\n' + direction.art + '\nCanvas: {width} x {height} px, aspect ratio {ratio}. Compose the entire cover specifically for this ratio with 6 percent safe margins; never crop a taller poster.\n{text_rule}\nNo added bylines, unsupported subtitles, watermarks, signatures, fake metrics, brands, contact sheets or reference-site UI.'
+    planningPrompt: ARTICLE_RULES + direction.planning + '严格遵守当前文字开关；仅在要求文字时使用用户完整标题，不添加虚构副标题。用英文给出可绘制的场景。',
+    imagePrompt: 'Create one finished premium editorial article cover.\nScene: {concept}\n' + direction.art + '\nCanvas: {width} x {height} px, aspect ratio {ratio}. Compose the entire cover specifically for this ratio with 6 percent safe margins; never crop a taller poster.\n{text_rule}\nThe text rule above takes absolute priority over any headline or typographic styling guidance: when it requests no text, render only the visual scene without lettering. Never reproduce the example subject by default.\nNo added bylines, unsupported subtitles, watermarks, signatures, fake metrics, brands, contact sheets or reference-site UI.'
   };
 });
 module.exports = { EXTRA_TEMPLATES };

@@ -39,7 +39,13 @@ test('standard three-file release loads without sibling modules, assets, network
   const temp=fs.mkdtempSync(path.join(os.tmpdir(),'bd-install-'));
   try {
     for(const file of ['main.js','manifest.json','styles.css']) fs.copyFileSync(path.join(root,file),path.join(temp,file));
-    const Plugin=load(path.join(temp,'main.js'));
+    const Plugin=load(path.join(temp,'main.js'),true);
+    for(const asset of ['gpt-concept-type','gpt-cinematic-story','gpt-object-editorial','gpt-human-narrative','gpt-opinion-collage','gpt-quiet-photo','gpt-literary-painting']) {
+      const preview=Plugin.testHooks.BDView.prototype.templatePreview.call({}, {coverPreviewAsset:asset});
+      assert.match(preview,/^data:image\/webp;base64,/);
+      const bytes=Buffer.from(preview.split(',')[1],'base64');
+      assert.equal(bytes.toString('ascii',0,4),'RIFF');assert.equal(bytes.toString('ascii',8,12),'WEBP');
+    }
     const app={vault:{adapter:{exists:async()=>true,mkdir:async()=>{},getBasePath(){throw new Error('Unexpected installed module lookup');}},on:()=>({})},workspace:{on:()=>({})}};
     const plugin=new Plugin(app); await plugin.onload();
     assert.equal(typeof plugin.layout.renderNeonCover,'function');
@@ -123,12 +129,15 @@ test('template dialogs preserve the host keyboard scope when opened for covers o
 
 test('new article recipes render chosen dimensions and keep cover titles out of body illustrations',()=>{
   const {EXTRA_TEMPLATES}=require('../src/template-catalog.js');
-  assert.equal(EXTRA_TEMPLATES.length,12);
+  assert.equal(EXTRA_TEMPLATES.length,15);
   for(const template of EXTRA_TEMPLATES){
     const state={platform:'custom',customW:1600,customH:640,textLevel:'title'};
     const cover=hooks.renderTemplatePrompt(template,state,'事实与观点','A bridge connecting two libraries');
     assert.ok(cover.includes('事实与观点'));assert.ok(cover.includes('A bridge connecting two libraries'));assert.ok(cover.includes('1600 x 640'));
     assert.ok(!/\{(?:concept|width|height|ratio|text_rule)\}/.test(cover));
+    const noText=hooks.renderTemplatePrompt(template,{...state,textLevel:'none'},'不应出现的标题','A quiet scene');
+    assert.ok(noText.includes('Do not render any text'));assert.ok(!noText.includes('不应出现的标题'));
+    if(template.coverReady)assert.ok(noText.includes('text rule above takes absolute priority'));
     const figure=hooks.renderFigureRecipe(hooks.figureRecipe(template),{scene:'Two linked components',w:1200,h:800});
     assert.ok(figure.includes('1200 x 800'));assert.ok(figure.includes('Never use the article title as a headline'));
     assert.ok(!figure.includes('事实与观点'));assert.ok(!/\{(?:concept|width|height|ratio|text_rule)\}/.test(figure));
@@ -141,7 +150,7 @@ test('new article recipes render chosen dimensions and keep cover titles out of 
 test('catalog expansion preserves user overrides, copied templates and legacy IDs without mutating settings',()=>{
   const settings={promptTemplates:[{id:'gpt-paper-world',name:'我的纸雕',planningPrompt:'My plan',imagePrompt:'My image'},{id:'private-copy',name:'个人模板',planningPrompt:'Private plan',imagePrompt:'Private image'}]};
   const before=JSON.stringify(settings),templates=hooks.promptTemplates(settings);
-  assert.equal(templates.length,16);assert.equal(new Set(templates.map(t=>t.id)).size,16);
+  assert.equal(templates.length,19);assert.equal(new Set(templates.map(t=>t.id)).size,19);
   assert.equal(templates.find(t=>t.id==='gpt-paper-world').imagePrompt,'My image');
   for(const id of ['blank','dan-koe','neon-card','private-copy'])assert.ok(templates.some(t=>t.id===id));
   assert.equal(JSON.stringify(settings),before);
@@ -149,10 +158,10 @@ test('catalog expansion preserves user overrides, copied templates and legacy ID
 
 test('cover library separates validated covers from body diagrams while preserving active and custom choices',()=>{
   const settings={promptTemplates:[]};
-  const covers=hooks.templateChoices(settings,'cover');assert.equal(covers.length,6);
-  for(const id of ['gpt-concept-type','gpt-cinematic-story','gpt-object-editorial','dan-koe','neon-card','blank'])assert.ok(covers.some(t=>t.id===id));
+  const covers=hooks.templateChoices(settings,'cover');assert.equal(covers.length,10);
+  for(const id of ['gpt-concept-type','gpt-cinematic-story','gpt-object-editorial','gpt-human-narrative','gpt-opinion-collage','gpt-documentary-lens','gpt-literary-painting','dan-koe','neon-card','blank'])assert.ok(covers.some(t=>t.id===id));
   assert.ok(!covers.some(t=>t.id==='gpt-knowledge-flow'));
-  assert.equal(hooks.templateChoices(settings,'figure').length,15);
+  assert.equal(hooks.templateChoices(settings,'figure').length,18);
   assert.ok(hooks.templateChoices(settings,'cover','gpt-knowledge-flow').some(t=>t.id==='gpt-knowledge-flow'));
   const custom={promptTemplates:[{id:'gpt-paper-world',name:'我的纸雕',planningPrompt:'My plan',imagePrompt:'My image'}]};
   assert.ok(hooks.templateChoices(custom,'cover').some(t=>t.id==='gpt-paper-world'));
