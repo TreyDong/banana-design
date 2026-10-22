@@ -84,4 +84,7 @@ DESIGN.md；界面字号、间距、圆角与焦点；模板卡片完整图片�
 - 构建与 97 项测试通过：新增自动选文的新/旧视图、焦点切换、忙碌保护、本机多图导入/同名、取消与格式/大小失败、真实文件选择器配置、参考图持久化回归。
 - Obsidian 实测：在已存在工作台的情况下切换到 Design QA 笔记，点击图标后顶部自动显示“让工具安静，让作品说话”；附件直接打开 macOS 选择器，导入临时 WebP 成功，缩略图出现“移除参考图”，有“已添加 1 张参考图”反馈。再次打开并取消选择后仍保留原图。
 - 文件核验：Design QA.md 的 referencePaths 已保存；笔记库内导入图片与选择的本机文件 SHA-256 相同。原项目 52 个源码文件未变化。
-- 验证中 Mac 自动锁屏；尚待解锁后完成来源菜单、BRAT 下载安装与安装后恢复的实机复验。已请求用户解锁，不以自动测试替代这一步。
+- 用户解锁后实测来源菜单：明确区分“从电脑添加参考图”和“从笔记库选择图片”；后者正常选择已导入的 WebP。
+- BRAT 实际下载并重载固定 `0.11.1-design.4`；安装后的 main.js SHA-256 为 `086bcab10ee92d5cf6c06988b2d2561999fd8b065389594b94a479f91e7167c3`，styles.css 为 `16ea4e06213f3e380964481e96c75aa1a39ae1a67b81fe609e6da992ae65e8a9`，均与本地构建、GitHub 资源一致，manifest 全部字段一致。重载后顶部文章与参考图缩略图恢复，referencePaths 保留。
+- GitHub 三个资源均 uploaded，prerelease=true、draft=false，正式 Latest 仍为 `0.10.2`。截图：`/private/tmp/banana-design-design4-reference.png`（来源验证后）、`/private/tmp/banana-design-design4-brat.png`（BRAT 安装后恢复）。
+- 本轮未请求真实模型或发布内容；本机选择器与恢复路径在 macOS Obsidian 桌面测试库验证。
