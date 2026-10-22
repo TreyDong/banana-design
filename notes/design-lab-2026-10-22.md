@@ -46,4 +46,10 @@ DESIGN.md；界面字号、间距、圆角与焦点；模板卡片完整图片�
 - 页签支持左右、Home、End，保留一个 Tab 入口；修复点击重建界面时焦点丢失。
 - `npm run check` 构建及 88 项回归通过，新增 3 项覆盖菜单在任务开始后的保护、重复选择和页签键盘行为。
 - 本地构建已通过 BRAT 重载初查：完整模板名、主题菜单、管理弹窗返回、长文章标题。测试库不含真实服务凭证，未发起生成或发布。
-- 下一步：发布 `0.11.1-design.2` 后经 BRAT 下载固定版本，复查最终构建的焦点、窄容器和持久化。
+- 已发布 `0.11.1-design.2`：GitHub 的三个资源全部 uploaded，prerelease=true、draft=false；正式 Latest 仍为 `0.10.2`。
+- BRAT 实际下载并重载了指定版本，固定版本保存为 `0.11.1-design.2`。安装文件时间为本轮 16:27；main.js、styles.css 与本地构建及 GitHub 资源摘要一致，manifest 全部字段一致（BRAT 序列化格式不同）。
+- 最终构建实机复验：点击页签后 Right 切换正文配图并保留焦点；End 到 X、Home 回封面；最终 BRAT 安装版再次验证 Right 和配图菜单入口。
+- 浅/深色主题、左右分屏窄容器均实际查看。文章标题两行且有上下文标签，模板名完整，模型/张数/生成按钮互不挤占；底部打开模型菜单时全部条目在窗口内。
+- 关闭模型管理弹窗后工作台刷新；BRAT 重载后文章、风格和预置计划仍保留。预置状态不代表真实生成结果。
+- 原项目 52 个源码文件的 SHA-256 与开工前快照全部相同。
+- 新截图：`/private/tmp/banana-design-design2-workspace-light.png`、`banana-design-design2-narrow-light.png`、`banana-design-design2-narrow-menu-dark.png`、`banana-design-design2-figure-dark.png`。
