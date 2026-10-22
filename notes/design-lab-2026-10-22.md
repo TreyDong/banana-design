@@ -100,3 +100,18 @@ DESIGN.md；界面字号、间距、圆角与焦点；模板卡片完整图片�
 - 实机验证中 Mac 锁屏，已请求用户解锁；待验证合成批次插入、渠道预览、模型选择显示、历史恢复与 BRAT 安装。尚未将自动测试视为实机验收。
 - `0.11.1-design.5` 已作为 prerelease 上传，draft=false，三个资源均 uploaded。服务端摘要与本地一致：main.js `93f912c08375ecc34ac3688f6dc7369ded9dd5be2b8d037762a3d672136beae3`，manifest.json `35d8a1b2736ef3967cc51ce58dd5e3ec71449727e7ccc0a4b8ac41de1ca430cc`，styles.css `51ac86cdc6c84d7b7c01f37c43e6ef65f4e3f72a769a864c0b653e3b0cc5f965`。原项目 src 的本轮前后快照一致。
 - 后续实机样例脚本预备在 `/private/tmp/banana-design-design5-fixture.cjs`，尚未执行；须先通过 BRAT 停用旧插件后再写合成样例，避免内存配置覆盖。测试库仍安装上一版，不声称第五版已通过 BRAT 验收。
+
+## 第六轮：实机修复与最终 BRAT 验收
+
+- 用户继续后已恢复界面访问。先通过 BRAT 停用旧实例，再备份测试库配置并执行上述合成样例脚本；只新增 Flow QA.md、History QA.md、项目自带示例图片副本和明确标记“仅界面”的模型显示样例，不读取或复制原库正文/密钥。
+- 第五版实机发现封面输入区仍引用已替换的 model 变量，首次打开报错。修复后增加完整封面输入区渲染与禁用测试；`design.5` 已转回草稿，最终使用 `design.6`，BRAT 列表已不再显示第五版。
+- 未插入时原文预览会露出内部标记：改为在原文、公众号、X 内容读取时移除当前批次自有标记，仅改变展示内容。实测原文标记仍保留用于插入；插入后两张嵌入链接存在，标记为零，保存阶段为 inserted。
+- 公众号 iframe 内的 app 资源 URL 实际加载失败，图片元素存在但截图是坏图。改为库内图片以内嵌数据加载，保留 sandbox=""；修复后截图确认两张图片均实际可见。
+- 全流程实测：已生成提示尚未插入 → 原文预览提示并返回 → 整批插入 → 已插入状态/预览文章主按钮 → 原文出现两张图 → 公众号图文显示 → X 本地切分 4 条并给首条添加图片，右侧卡片显示图片。未点击推送或发布。
+- 历史实测：全库列表按文章/类型搜索，跨文章打开封面并恢复 1200×800 原尺寸；恢复封面后补回所属候选批次，显示“候选 · 1 张”。按段落历史可打开；切到 AI 模式后“本篇历史”仍可返回按段落批次。模型切换后两行显示立即更新，重载保留选择。
+- Obsidian 1.14.4 / macOS 默认深色主题，整窗、左右分屏、三分屏实测。紧凑容器转为纵向布局，历史按钮与当前文章分行，模型及预览按钮可访问。测试后关闭两个临时工作台，恢复单工作台。
+- 最终构建与 107 项测试通过，日志 `/private/tmp/banana-design-design6-check-final.log`。新增完整输入区、展示时隐藏自有标记、沙箱图片数据加载回归；本轮原项目 src 快照一致。
+- `0.11.1-design.6` prerelease=true、draft=false，三个资源 uploaded，正式 Latest 仍为 `0.10.2`。BRAT 实际下载安装并固定第六版；安装 main.js、styles.css 与本地及服务端摘要相同，manifest 全部字段一致。
+- SHA-256：main.js `b6f36a0f9445b180ee96c0c48896c79cadc3c41013017824ad573f12c0a58965`，manifest.json `4d25db5a5ff87f9128c214859e782848e073ca25099b8238a085e2ed068cd1b1`，styles.css `51ac86cdc6c84d7b7c01f37c43e6ef65f4e3f72a769a864c0b653e3b0cc5f965`。
+- 安装后再次从历史打开封面与正文批次，原尺寸/候选和两张“已插入”状态保留；原文预览图片存在，X 四条草稿与首条图片恢复。截图位于 `/private/tmp/banana-design-design6-inserted.png`、`banana-design-design6-wechat-fixed.png`、`banana-design-design6-history.png`、`banana-design-design6-compact.png`、`banana-design-design6-brat-x.png`。
+- 未验证真实模型生成、公众号草稿推送或 X 发帖；未在宿主切换英文、浅色主题或其他系统，本轮没有宿主控制台日志接口。截图和行为验收覆盖上述具体路径，不代表这些未测项通过。
