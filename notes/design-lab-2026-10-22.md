@@ -115,3 +115,9 @@ DESIGN.md；界面字号、间距、圆角与焦点；模板卡片完整图片�
 - SHA-256：main.js `b6f36a0f9445b180ee96c0c48896c79cadc3c41013017824ad573f12c0a58965`，manifest.json `4d25db5a5ff87f9128c214859e782848e073ca25099b8238a085e2ed068cd1b1`，styles.css `51ac86cdc6c84d7b7c01f37c43e6ef65f4e3f72a769a864c0b653e3b0cc5f965`。
 - 安装后再次从历史打开封面与正文批次，原尺寸/候选和两张“已插入”状态保留；原文预览图片存在，X 四条草稿与首条图片恢复。截图位于 `/private/tmp/banana-design-design6-inserted.png`、`banana-design-design6-wechat-fixed.png`、`banana-design-design6-history.png`、`banana-design-design6-compact.png`、`banana-design-design6-brat-x.png`。
 - 未验证真实模型生成、公众号草稿推送或 X 发帖；未在宿主切换英文、浅色主题或其他系统，本轮没有宿主控制台日志接口。截图和行为验收覆盖上述具体路径，不代表这些未测项通过。
+
+## 第七轮：原文页去掉重复导航（2026-10-23）
+
+- 用户指出原文中的公众号、X 预览按钮与已有菜单重复。移除两个按钮及其整行容器，同时移除重复解释菜单用途的说明文案和无用样式/译文。
+- 渠道切换统一沿用上方“原文 / 公众号 / X”菜单；设计规范补充这一约束。没有调整发布实现、模型选择或历史数据。
+- 已有 107 项回归通过；删除无用译文后重新构建。版本更新为 `0.11.1-design.7`，待 BRAT 安装后核验原文和菜单切换。
