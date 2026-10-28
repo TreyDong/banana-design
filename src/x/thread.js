@@ -3,7 +3,8 @@
  * Obsidian 方言转纯文本、按句边界安全切分（不劈 URL 与 emoji 字形）、编号、AI 产物解析。
  * 纯函数、可在 node --test 中单测；AI 改写的结果也要在这里做最终校验与保底切分。 */
 
-const { parseTweet } = require('twitter-text');
+// Bundle the parser we use, rather than the package's unrelated linkification APIs.
+const parseTweet = require('twitter-text/dist/parseTweet');
 
 const LIMIT = 280;              // X 单条加权上限
 const LONG_LIMIT = 25000;       // X Premium 长推上限

@@ -33,6 +33,8 @@ The WeChat **fixed-IP relay (SSH tunnel)** uses [ssh2](https://github.com/mscdex
 
 ### ssh2 (MIT)
 
+The ES2022 build replaces ssh2's legacy BigInt syntax probe with a direct BigInt expression. It also replaces core-js's legacy dynamic global-object fallback with `globalThis`. Both adjustments are explicit in `scripts/build.mjs`; dependency source changes make the build fail until the compatibility adjustments are reviewed. Licenses and attribution are retained.
+
 Copyright Brian White. All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -416,7 +418,7 @@ SOFTWARE.
 
 ## Preview assets and templates
 
-`assets/neon-card.svg` is the original geometric layout preview supplied with Banana Design. `assets/dan-koe.png` is the AI-generated, untitled generic landscape preview supplied with Banana Design; it contains no article material and is not a work by Dan Koe. The template name describes a visual reference, not authorship or endorsement. Custom user templates, reference photos and generated article images are not bundled.
+`assets/neon-card.svg` is the original geometric layout preview supplied with Banana Design. `assets/dan-koe.png` is the retained AI-generated, untitled generic landscape source; the build embeds its 1000px-wide WebP thumbnail in `assets/dan-koe.webp`. It contains no article material and is not a work by Dan Koe. The template name describes a visual reference, not authorship or endorsement. Custom user templates, reference photos and generated article images are not bundled.
 
 Both previews are embedded at build time. There are no bundled third-party fonts or runtime font downloads; the local Canvas renderer uses system fonts. Template prompts and `src/rendering/cover-layout.js` are authored for this plugin. Referenced external projects are design research references, not additional bundled dependencies.
 

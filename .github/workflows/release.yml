@@ -17,6 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
     env:
       RELEASE_TAG: ${{ github.ref_name }}
       GH_TOKEN: ${{ github.token }}
@@ -42,6 +45,25 @@ jobs:
           NODE
       - run: npm ci
       - run: npm run check
+      - name: Enforce the Obsidian Sync Standard size limit
+        run: |
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          const fs = require('node:fs');
+          assert.ok(fs.statSync('main.js').size <= 5_000_000, 'main.js must fit within 5 MB');
+          NODE
+      - name: Attest release asset provenance
+        uses: actions/attest@v4.2.2
+        with:
+          subject-path: |
+            main.js
+            manifest.json
+            styles.css
+      - name: Verify release asset provenance
+        run: |
+          for asset in main.js manifest.json styles.css; do
+            gh attestation verify "$asset" --repo "$GITHUB_REPOSITORY"
+          done
       - name: Upload and verify the three Obsidian assets
         run: |
           if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
