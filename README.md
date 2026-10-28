@@ -9,7 +9,7 @@ Create article-led covers and illustrations in Obsidian desktop. Choose an artic
 ## Use
 
 1. Enable the plugin and run **Open illustration workspace** (`banana-design:open`), or select its ribbon icon.
-2. Open a Markdown note and click the Banana Design ribbon icon to use that note automatically. The workspace has two stages: **Create images** (Cover / Body illustrations) and **Preview & publish** (Original article / WeChat / X). Each stage keeps the last subpage while the workspace stays open. Select a Markdown article. Choose a format and a template, including the built-in blank, engraving-inspired, and local card layouts. Dimensions and visual style are independent.
+2. Open a Markdown note and click the Banana Design ribbon icon to use that note automatically. The workspace has two stages: **Create images** (Cover / Body illustrations) and **Preview & publish** (Original article / WeChat / X). Each stage keeps the last subpage while the workspace stays open. Select a Markdown article. Choose a format and a template. Dimensions and visual style are independent.
 3. The paperclip opens your computer’s image picker (PNG / JPEG / WebP, multiple selection). Images follow the vault attachment folder setting and remain attached as references to that article; the adjacent menu also offers existing vault images. For a cover, enter the request and choose 1–4 candidates. Generated images are saved as new files; old results remain in history.
 4. Canvas text is authored, not copied: while planning each cover, the text model also writes a short headline (and a supporting line for title+subtitle mode) from the article body instead of reusing the article title. The compose panel shows this canvas text with its source; edit it inline or switch back to the article title before generating.
 5. Region editing: with a generated cover open, choose “Region edit”, drag a rectangle over the preview, and describe the change. The marked region is sent through the reference-image editing path so only that area changes; the result is saved as a new candidate with its origin recorded.
@@ -52,7 +52,7 @@ The plugin ID remains `banana-design`, the command remains `open`, and the setti
 
 Open the official [Obsidian Community listing](https://community.obsidian.md/plugins/banana-design) and choose **Add to Obsidian**. The initial 0.10.1 publication completed automated review on 2026-10-19 with **Health: Excellent** and **Review: Satisfactory**, including a byte-for-byte reproduced build. Those results describe 0.10.1; consult the listing for the current version's review status. GitHub Releases and marketplace review may update at different times.
 
-The expanded plugin bundle exceeds 5 MB. Obsidian Sync Standard cannot sync files larger than 5 MB, so install the plugin separately on each desktop if you use that plan. The release embeds the offline template previews in the standard three-file package.
+The expanded plugin bundle exceeds 5 MB. Obsidian Sync Standard cannot sync files larger than 5 MB, so install the plugin separately on each desktop if you use that plan. The release embeds offline preview assets in the standard three-file package.
 
 For a manual install, download **main.js**, **manifest.json** and **styles.css** from the matching [GitHub Release](https://github.com/TreyDong/banana-design/releases) and place them in `<vault>/.obsidian/plugins/banana-design/`. Enable Banana Design in Community plugins. Do not copy source folders or any other person's `data.json` into the vault.
 
@@ -74,11 +74,10 @@ src/
   services/model-services.js   Model connections and provider protocols
   illustrations/figure-agent.js Article planning, anchors and insertion
   rendering/cover-layout.js    Local cover rendering
-  templates/catalog.js         Cover and illustration recipes
-  templates/styles.js          Thirty complete visual-style systems
+  templates/                   Cover and illustration templates
 scripts/build.mjs              Bundle and embed previews and notices
 tests/release.test.cjs          Release and behavior regression tests
-assets/                        Offline preview images and type studies
+assets/                        Offline preview assets
 manifest.json                  Obsidian plugin metadata
 versions.json                  Version compatibility
 styles.css                     Plugin styles
@@ -92,21 +91,11 @@ Tests cover standalone three-file installation, migration, source/marker ownersh
 
 [MIT](LICENSE), with original upstream attribution retained. Banana Design includes adapted Codex bridge and provider preset portions from [Qiaomu Design](https://github.com/joeseesun/qiaomu-cover-design) by Xiangyang Qiaomu (joeseesun). Full upstream MIT terms and the precise adaptation scope are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and embedded in the distributed plugin. Local article illustration planning, anchor and layout modules were authored for Banana Design.
 
-The engraving template is a style reference; its AI-generated generic preview is not Dan Koe's artwork and implies no endorsement. Custom user assets are not bundled. This is an independent community plugin, not an official Obsidian, Qiaomu, OpenAI or Dan Koe product.
-
-## Template catalog
-
-The catalog includes 68 templates, with **60 cover choices and 68 illustration styles**. Thirty newly added styles each define their own typography, composition and image medium, including magazine, fresh, minimalist, contemporary Chinese, graphic novel, pixel art, clay and textile craft. All previous thirty cover choices, including Dan Koe, remain available; blank stays first. Covers and body illustrations have separate prompts, independent dimensions and saved custom overrides. The source link appears for researched recipes when selected. Both libraries display available visual-style samples; body-library samples are labeled **Style reference**, while diagram-only recipes retain their specific layout studies. The thirty new styles use generated samples; older generated samples and typography examples keep their original labels in the cover library. A style reference does not cause the cover headline or composition to be reused in body generation.
-
-The original category recipes are informed by a popular GPT Image repository's documented categories and production rules. The four newer editorial directions use independently written rules informed by real publication-design references. Repository stars and article views are not per-template use counts or proof of a cover's causal effect. No runtime reference-site request or fixed image provider is added. See [template sources and attribution](THIRD_PARTY_NOTICES.md#awesome-gpt-image-template-research) and the source links in [the catalog](src/templates/catalog.js). The initial category expansion shipped in version 0.10.2; the thirty-cover expansion below is currently unreleased.
+Custom user assets are not bundled. This is an independent community plugin, not an official Obsidian, Qiaomu, OpenAI or Dan Koe product.
 
 ## Changes
 
 ### Unreleased
-
-- Fixed the article-illustration template library showing generic layout placeholders despite available style previews. It now uses the same offline visual references as the cover library, including the thirty generated style samples. Custom preview images retain priority; separate body-generation prompts are unchanged.
-
-- Added **Agent selects a template** for covers and article illustrations. It uses the configured planning model to compare visible built-in and custom templates with the article, request and output dimensions, and displays a short reason. Multiple new covers can use different suitable styles; one illustration batch shares one selected style. Manually selecting any template, including Blank or Dan Koe, locks that choice. Existing sessions retain their selections; new articles start in automatic mode. Editing a generated cover retains its recorded style. Enabling automatic selection on an existing illustration draft requires replanning before generation. Invalid, hidden or invented template IDs stop the request instead of silently generating with a fallback. Template selection makes an additional planning request only after the user starts a design/plan; opening an article makes no model call.
 
 - Removed the interface-language dropdown from plugin settings; the interface now simply follows Obsidian's own language setting. `settings.language` and its persistence behavior are unchanged for existing installs.
 - X publishing supports **both OAuth 2.0 (Authorization Code + PKCE, the officially recommended flow) and OAuth 1.0a**, selectable in settings. OAuth 2.0 needs only a Client ID/Secret: the plugin starts a one-shot local callback server, opens the browser authorization (scopes tweet.read/write, users.read, media.write, offline.access), exchanges the code within its 30-second window, stores tokens in SecretStorage and refreshes automatically before the 2-hour expiry (rotated refresh tokens persisted). The token endpoints travel through the same direct/proxy/SSH transports as the API calls.
@@ -115,22 +104,12 @@ The original category recipes are informed by a popular GPT Image repository's d
 - Settings pages (Files, WeChat, About) now use bordered group cards with a heading row, matching the Banana Reader settings layout; the SSH relay group carries an enable toggle in its heading and keeps its fields collapsed until switched on.
 - Added a **fixed-IP relay over SSH** for WeChat publishing: provide a server's SSH address plus password or private key and the plugin tunnels the `access_token` request through it (bundled `ssh2`, no server-side setup), so the whitelist needs only the server's fixed IP. Uploads and drafts stay direct, with an automatic tunnel retry on error 40164. Host-key fingerprints are pinned on first use; SSH secrets are stored in SecretStorage. Replaced the egress-IP lookup with a **connectivity test** that performs a real token request and, on 40164, parses and copies the effective egress IP. An end-to-end regression test runs a mock SSH server and TLS endpoint through the real tunnel code.
 - Added **WeChat formatting and publishing**: a fourth workspace tab renders the current article into WeChat-compatible rich text with four built-in inline-style themes, a phone-width preview, image placeholder upload and draft-box push for verified accounts. AppID/AppSecret live in Obsidian SecretStorage; the secret never enters `data.json`. Publishing follows the official draft flow (`token` → `uploadimg` → `add_material` → `draft/add`); final publishing remains a manual step at mp.weixin.qq.com. `Copy rich text` is the fallback for accounts without API access. Markdown parsing uses the bundled [marked](https://github.com/markedjs/marked) 18.1.1 (MIT; see THIRD_PARTY_NOTICES.md). New regression tests cover theme structure, the formatting pipeline (including Obsidian syntax handling) and the API client with a stubbed network.
-- Added **30 complete visual styles** alongside every existing template, bringing the library to **60 cover choices / 68 illustration styles**. Each new style has independent type, composition and material rules; the old recipes and IDs are unchanged. Thirty generated previews use the same fictional headline and scene so style differences can be compared directly. Chinese/English names and descriptions are included. Five offline image sheets are bundled once in `assets/style-previews.json`; each card displays its own cell without downloading fonts or images. These demonstrate the design direction, not a claim that every configured image service has been tested or will reproduce identical output.
-
-- Expanded the default cover library to **30 choices** (38 illustration styles) after inspecting seven GitHub projects and the Canva, Kittl, Fotor, Adobe Express and Playground template collections. Fourteen new directions have independently written prompts, different sample titles, original offline SVG examples and per-template reference links. Sources, checked star counts, licenses, inspection limits and selection reasons are recorded in [template-research.json](assets/template-research.json).
-
-- Expanded covers from 10 to 16 choices with six original typography directions: resource list, Swiss grid, magazine headline, vintage newsprint, duotone screenprint and archive papers. Each uses a distinct fictional sample title and is labeled **Typography example**, separate from the seven generated-image previews. Runtime prompts use the selected article, never the sample copy or numbers.
-- Replaced the current-template dropdown at the bottom with a searchable management list. Edit names, descriptions and prompts; create or copy templates; hide/show styles; reset built-in edits; delete and restore custom templates. Hidden active templates remain usable, and the blank template stays first. Management edits preserve the active selection.
-- Fixed long Chinese and English descriptions wrapping inside cards, kept search and management controls visible above the scrolling grid, and added save-failure rollback for template preferences.
-
-
 ### 0.10.2 — 2026-10-20
 
-- Added an interface language setting with automatic, Simplified Chinese and English modes, including settings help, workspace controls, template descriptions, model dialogs and authored status/error messages.
-- Language changes persist and refresh the workspace. User-authored content, template instructions, saved image names and paths retain their original wording. Language changes are disabled during active generation or insertion.
-- Added article-led visual recipes with seven original generated-cover previews, including human narrative, opinion collage, quiet lifestyle photography and literary painting; refined headline weight, emphasis and alignment.
-- Kept explanatory diagrams in the illustration library while preserving active selections and saved custom templates. Simplified provider cards to names and aligned marks.
-- Validation: all 15 regression checks pass, including saved language choices, automatic host-language selection, save-failure rollback, custom template text and unchanged generation prompts/output paths. Native Obsidian 1.14.4 checks covered Chinese/English settings, model forms, workspace tabs and template descriptions, plus persistence across plugin reload.
+- Added an interface language setting with automatic, Simplified Chinese and English modes, including settings help, workspace controls, model dialogs and authored status/error messages.
+- Language changes persist and refresh the workspace. User-authored content, saved image names and paths retain their original wording. Language changes are disabled during active generation or insertion.
+- Simplified provider cards to names and aligned marks.
+- Validation: all 15 regression checks pass, including saved language choices, automatic host-language selection, save-failure rollback and unchanged generation prompts/output paths. Native Obsidian 1.14.4 checks covered Chinese/English settings, model forms and workspace tabs, plus persistence across plugin reload.
 
 ### Source organization — 2026-10-20
 
@@ -145,53 +124,3 @@ The original category recipes are informed by a popular GPT Image repository's d
 - Fixed template dialogs overwriting Obsidian's internal keyboard scope.
 - Removed routine startup logging and preserved existing IDs, settings, history and output paths.
 - Created a clean source repository from the user-confirmed readable vault modules; excluded private data and local backups.
-
-## Cover samples and illustration recipes
-
-The cover library includes the existing blank, engraving and neon layouts plus seven generated-cover directions: conceptual paper typography, cinematic spatial storytelling, tactile metaphorical still life, human narrative, opinion collage, quiet lifestyle photography and literary painting. Their offline previews are actual generated covers using distinct demonstration topics suited to each style. These fictional examples show possible applications; they are not user articles or fixed prompts for later covers. Each selected article supplies its own title, subject and scene. The four newer directions also support title-free images; the selected text rule takes priority over typography guidance.
-
-| Direction | Demonstration title | Intended example |
-| --- | --- | --- |
-| Conceptual paper typography | When aesthetics fall short, how can AI create more refined products? | Product and design |
-| Cinematic storytelling | Take another path and start again | Change and personal choices |
-| Tactile still life | Buy less, use longer | Thoughtful consumption and repair |
-| Human narrative | Life begins after work | Everyday experience beyond work |
-| Opinion collage | More information, harder judgment? | Commentary and information judgment |
-| Lifestyle photography | Give the weekend back to real life | Daily life and weekend observation |
-| Literary painting | Moving forward slowly through uncertainty | Personal essays and reflection |
-
-The preview correction replaces six comparison images from 0.10.2, retaining one product/design example and the established typography direction. Original generation briefs and reference versions are recorded in [preview-samples.json](assets/preview-samples.json). It changes demonstration images, not runtime template instructions or user content.
-
-Process, comparison, scale and other diagram recipes remain available in the article-illustration library. Existing active choices and saved user customizations remain accessible. A sample demonstrates one generated result, not a guarantee that every model produces an identical image. Current reusable prompts are in [the catalog](src/templates/catalog.js), with offline samples in `assets/` and regression coverage in `tests/`.
-
-
-## Earlier cover-direction expansion
-
-The earlier expansion brought the cover library to **30 selectable templates**; all remain available alongside the thirty new visual styles. The following fourteen directions built on the earlier sixteen covers. They retain their original prompts, IDs and typography-example previews for compatibility.
-
-| New direction | Demonstration title | Method reference |
-| --- | --- | --- |
-| Split photograph | An ordinary person's day | Canva blog graphics; Fotor banners |
-| Cutout portrait | Find your own voice | ZeroLu magazine portrait; Canva |
-| Monochrome frame | The city is large, yet everyone needs a corner of their own | Fotor black-and-white blog covers |
-| Film sequence | Visit an unfamiliar city with curiosity | YouMind travel editorial; Fotor |
-| Torn-paper journal | Piece together life's fragments into a life of your own | PicoTrex collage; YouMind |
-| Bauhaus | Give inspiration a place to happen | Kittl Bauhaus posters |
-| Brutalist type | Don't wait for perfect—just start | Kittl brutalist posters |
-| Vintage travel | Follow the mountain road to reclaim the weekend | Playground vintage posters |
-| Cyanotype | Observe a leaf and rediscover nature | Original contact-print direction extending GPT Image subject/whitespace research |
-| Ink double exposure | Between mountains and water, see another way of living | GPT Image ink double-exposure category |
-| Miniature scene | A small bookstore that holds a world | ZeroLu narrative diorama category |
-| Matte gradient | Tools change—where does creativity go? | Adobe Express banner hierarchy |
-| Motion moment | Taking the first step matters more than preparing | GPT Image sports campaign category |
-| Exhibition catalog | Look at a work again from a new angle | Kittl art-show posters; editorial hierarchy research |
-
-The new offline previews are explicitly labeled **Typography example**. They show composition and headline hierarchy; they are not copied website templates, third-party photographs or proof that an image model reproduced the sample. The selected article supplies the actual subject, exact title and supported facts. A verified number is required before a numeric cover can emphasize it, and title-free output takes precedence over every style rule. No website login, runtime reference-site fetch, bundled editor dependency or font download was added.
-
-## Thirty complete visual styles
-
-The additional styles are: Magazine, Fresh and airy, Minimalist, Midcentury retro, Personal scrapbook, Contemporary Chinese, Cinematic poster, Pop art, Playful cut-paper, Cyberpunk noir, Y2K chrome, Vaporwave, Art Deco, Art Nouveau, Ukiyo-e woodblock, Nordic folk, Expressionist linocut, Risograph zine, Impasto oil, Botanical watercolor, Graphite sketch, Graphic novel, Pixel art, Clay stop-motion, Refractive glass, Woven patchwork, Felt embroidery, Stained-glass mosaic, Industrial blueprint and Surreal photography.
-
-Every style specifies typography, spatial composition and material/image language independently. Some deliberately use Song/Ming serif or handwritten forms; others use bitmap strokes, technical lettering, dimensional clay or fabric letters. Layout adapts to the selected article and dimensions. With text disabled, all lettering and title-only panels are removed. Article-body illustrations reuse the medium without importing the cover headline or its layout.
-
-All thirty generated previews use the fictional title **Life is worth reimagining** and a room/window/chair/plant scene. This controlled comparison makes differences in type, hierarchy, material and composition visible. Previews were generated with the built-in imagegen tool, encoded as WebP without repainting, and stored as five six-cell sheets; SVG viewports select a single cell at runtime. Generation briefs and frame coordinates are included in [style-previews.json](assets/style-previews.json). The Chinese-ink preview received a targeted imagegen cleanup to remove an unwanted artist-like seal. These previews are not user articles or fixed content for future generation, and are not proof of output from every supported provider.
