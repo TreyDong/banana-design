@@ -18,7 +18,7 @@ Create article-led covers and illustrations in [Obsidian](https://obsidian.md/) 
 
 Install from the [Obsidian Community plugins listing](https://community.obsidian.md/plugins/banana-design), or download `main.js`, `manifest.json`, and `styles.css` from the matching [GitHub Release](https://github.com/TreyDong/banana-design/releases) into `<vault>/.obsidian/plugins/banana-design/` and enable the plugin.
 
-The release package is larger than 5 MB, so Obsidian Sync Standard cannot sync it; install the plugin separately on each desktop if you use that plan.
+From 0.12.2, the plugin bundle stays below 5 MB for Obsidian Sync Standard. All template previews remain embedded and available offline.
 
 ## Getting started
 
@@ -38,6 +38,8 @@ Configure **Planning** and **Image generation** separately in settings. New inst
 - The plugin is MIT licensed, with no payment gate, ads, author-operated service, or client-side telemetry. AI usage is billed by the provider you configure.
 - Only explicit requests send article text, prompts, or reference images to the chosen planning or image service. The vault is not scanned in the background.
 - Session data lives in `<vault>/.obsidian/plugins/banana-design/data.json`; generated PNGs stay in the configured vault folder. Syncing those locations may sync private content.
+- The optional Codex bridge reads the home directory, shell and executable path to locate and launch the user's installed CLI, and reads generated images from validated job/cache directories. The optional SSH relay reads a configured private-key file when requested. These features need local process and filesystem access; they are not machine-fingerprinting or telemetry features.
+- Article and image pickers enumerate vault file names locally. Copy actions write the requested content to the clipboard; the plugin does not read unrelated clipboard contents. Disabling Codex or SSH usage does not remove these capabilities from the installed bundle, so automated reviewers may still list them.
 - This is an independent community plugin, not an official Obsidian, Qiaomu, OpenAI, or Dan Koe product.
 
 ## Development
@@ -52,6 +54,8 @@ npm run check
 `npm run build` creates an unminified CommonJS `main.js` in the project root. Release assets are `main.js`, `manifest.json`, and `styles.css` under a tag that matches the manifest version (no `v` prefix).
 
 Pushing a stable version tag runs the release workflow: it checks version metadata, builds and tests the plugin, then publishes those three files as individual GitHub Release assets. Keep ZIP archives out of the plugin release; Obsidian downloads only the individual files.
+
+The workflow enforces the 5 MB bundle budget and signs GitHub artifact attestations for all three files, verifying their provenance before publishing. Preview thumbnails and a parser-only import keep the bundle small. The ES2022 build replaces two obsolete dependency syntax/global-object probes with direct expressions, without runtime string evaluation or identifier minification.
 
 For changes in each release, see the [GitHub Releases](https://github.com/TreyDong/banana-design/releases) page.
 
