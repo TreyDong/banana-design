@@ -1,6 +1,6 @@
 # Banana Design
 
-> Design lab: isolated workspace on `design/visual-system`. UI and template changes follow [DESIGN.md](DESIGN.md). The original `../banana-design` checkout is retained. Experiment scope and validation are recorded in [notes/design-lab-2026-10-22.md](notes/design-lab-2026-10-22.md).
+> Design lab: isolated workspace on `design/visual-system`. UI and template changes follow [DESIGN.md](DESIGN.md). Experiment scope and validation are recorded in [notes/design-lab-2026-10-22.md](notes/design-lab-2026-10-22.md).
 
 Create article-led covers and illustrations in Obsidian desktop. Choose an article, a visual template, and independent planning and image services. Preview results, export PNGs, and insert illustrations at approved locations.
 
@@ -8,7 +8,7 @@ Create article-led covers and illustrations in Obsidian desktop. Choose an artic
 
 ## Use
 
-1. Enable the plugin and run **Open illustration workspace** (`banana-design:open`, displayed in Chinese as 打开配图工作台), or select its ribbon icon.
+1. Enable the plugin and run **Open illustration workspace** (`banana-design:open`), or select its ribbon icon.
 2. Open a Markdown note and click the Banana Design ribbon icon to use that note automatically. The workspace has two stages: **Create images** (Cover / Body illustrations) and **Preview & publish** (Original article / WeChat / X). Each stage keeps the last subpage while the workspace stays open. Select a Markdown article. Choose a format and a template, including the built-in blank, engraving-inspired, and local card layouts. Dimensions and visual style are independent.
 3. The paperclip opens your computer’s image picker (PNG / JPEG / WebP, multiple selection). Images follow the vault attachment folder setting and remain attached as references to that article; the adjacent menu also offers existing vault images. For a cover, enter the request and choose 1–4 candidates. Generated images are saved as new files; old results remain in history.
 4. Canvas text is authored, not copied: while planning each cover, the text model also writes a short headline (and a supporting line for title+subtitle mode) from the article body instead of reusing the article title. The compose panel shows this canvas text with its source; edit it inline or switch back to the article title before generating.
@@ -28,7 +28,7 @@ New installations default to Codex CLI connections; enabling the plugin does not
 
 ## WeChat formatting and publishing
 
-The workspace gains a **WeChat tab** (公众号) for turning the current article into WeChat Official Account compatible rich text: Markdown is parsed with the bundled marked parser and every element receives inline styles from a selectable theme (four built-in themes), because the WeChat editor strips classes and external CSS. Obsidian specifics are normalized — `![[embeds]]` and local images become placeholders that are uploaded to WeChat on publish, `[[wikilinks]]` become plain text, `==highlights==` become styled marks, and callouts become styled quotes. A phone-width preview renders in the workspace stage.
+The workspace gains a **WeChat tab** for turning the current article into WeChat Official Account compatible rich text: Markdown is parsed with the bundled marked parser and every element receives inline styles from a selectable theme (four built-in themes), because the WeChat editor strips classes and external CSS. Obsidian specifics are normalized — `![[embeds]]` and local images become placeholders that are uploaded to WeChat on publish, `[[wikilinks]]` become plain text, `==highlights==` become styled marks, and callouts become styled quotes. A phone-width preview renders in the workspace stage.
 
 Publishing requires a **verified** Official Account: set the AppID and AppSecret in **Settings → Banana Design → WeChat** (the secret is stored in Obsidian SecretStorage, never in `data.json`). Publishing uploads article images (`uploadimg`), uploads the selected cover as permanent material (`add_material`, PNG/JPG/GIF; WebP images are re-encoded locally), and creates a draft (`draft/add`) that appears in the account's draft box at mp.weixin.qq.com — final publishing stays a manual step in the WeChat admin. The WeChat API checks the caller IP against the account whitelist when issuing an `access_token`. Because home broadband IPs change, the settings page offers a **fixed-IP relay over SSH**: enter the address, username and password or private key of any server you own, and the plugin opens an SSH tunnel (bundled [ssh2](https://github.com/mscdex/ssh2), equivalent to `ssh -D` but built in) so that single token request leaves from the server's fixed IP — the server needs no configuration beyond default `AllowTcpForwarding`. Image uploads and draft creation go direct; if WeChat ever answers 40164 on one of them, that request is retried through the tunnel. The first connection records the server's host-key fingerprint and later mismatches are refused. SSH password, pasted private key and passphrase live in Obsidian SecretStorage. A **connectivity test** makes one real token request and, when the caller IP is not whitelisted, parses the effective egress IP from WeChat's error message and copies it (with the relay configured, that is the server IP to whitelist). "Copy rich text" provides a fallback that places the themed HTML on the clipboard for manual pasting. Cover candidates come from covers generated in the cover tab or the article's first image; a draft cannot be pushed without a cover.
 
@@ -90,7 +90,7 @@ Tests cover standalone three-file installation, migration, source/marker ownersh
 
 ## License and credits
 
-[MIT](LICENSE), with original upstream attribution retained. Banana Design includes adapted Codex bridge and provider preset portions from [Qiaomu Design](https://github.com/joeseesun/qiaomu-cover-design) by 向阳乔木 (joeseesun). Full upstream MIT terms and the precise adaptation scope are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and embedded in the distributed plugin. Local article illustration planning, anchor and layout modules were authored for Banana Design.
+[MIT](LICENSE), with original upstream attribution retained. Banana Design includes adapted Codex bridge and provider preset portions from [Qiaomu Design](https://github.com/joeseesun/qiaomu-cover-design) by Xiangyang Qiaomu (joeseesun). Full upstream MIT terms and the precise adaptation scope are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and embedded in the distributed plugin. Local article illustration planning, anchor and layout modules were authored for Banana Design.
 
 The engraving template is a style reference; its AI-generated generic preview is not Dan Koe's artwork and implies no endorsement. Custom user assets are not bundled. This is an independent community plugin, not an official Obsidian, Qiaomu, OpenAI or Dan Koe product.
 
@@ -114,7 +114,7 @@ The original category recipes are informed by a popular GPT Image repository's d
 
 - Settings pages (Files, WeChat, About) now use bordered group cards with a heading row, matching the Banana Reader settings layout; the SSH relay group carries an enable toggle in its heading and keeps its fields collapsed until switched on.
 - Added a **fixed-IP relay over SSH** for WeChat publishing: provide a server's SSH address plus password or private key and the plugin tunnels the `access_token` request through it (bundled `ssh2`, no server-side setup), so the whitelist needs only the server's fixed IP. Uploads and drafts stay direct, with an automatic tunnel retry on error 40164. Host-key fingerprints are pinned on first use; SSH secrets are stored in SecretStorage. Replaced the egress-IP lookup with a **connectivity test** that performs a real token request and, on 40164, parses and copies the effective egress IP. An end-to-end regression test runs a mock SSH server and TLS endpoint through the real tunnel code.
-- Added **WeChat formatting and publishing** (公众号): a fourth workspace tab renders the current article into WeChat-compatible rich text with four built-in inline-style themes, a phone-width preview, image placeholder upload and draft-box push for verified accounts. AppID/AppSecret live in Obsidian SecretStorage; the secret never enters `data.json`. Publishing follows the official draft flow (`token` → `uploadimg` → `add_material` → `draft/add`); final publishing remains a manual step at mp.weixin.qq.com. `Copy rich text` is the fallback for accounts without API access. Markdown parsing uses the bundled [marked](https://github.com/markedjs/marked) 18.1.1 (MIT; see THIRD_PARTY_NOTICES.md). New regression tests cover theme structure, the formatting pipeline (including Obsidian syntax handling) and the API client with a stubbed network.
+- Added **WeChat formatting and publishing**: a fourth workspace tab renders the current article into WeChat-compatible rich text with four built-in inline-style themes, a phone-width preview, image placeholder upload and draft-box push for verified accounts. AppID/AppSecret live in Obsidian SecretStorage; the secret never enters `data.json`. Publishing follows the official draft flow (`token` → `uploadimg` → `add_material` → `draft/add`); final publishing remains a manual step at mp.weixin.qq.com. `Copy rich text` is the fallback for accounts without API access. Markdown parsing uses the bundled [marked](https://github.com/markedjs/marked) 18.1.1 (MIT; see THIRD_PARTY_NOTICES.md). New regression tests cover theme structure, the formatting pipeline (including Obsidian syntax handling) and the API client with a stubbed network.
 - Added **30 complete visual styles** alongside every existing template, bringing the library to **60 cover choices / 68 illustration styles**. Each new style has independent type, composition and material rules; the old recipes and IDs are unchanged. Thirty generated previews use the same fictional headline and scene so style differences can be compared directly. Chinese/English names and descriptions are included. Five offline image sheets are bundled once in `assets/style-previews.json`; each card displays its own cell without downloading fonts or images. These demonstrate the design direction, not a claim that every configured image service has been tested or will reproduce identical output.
 
 - Expanded the default cover library to **30 choices** (38 illustration styles) after inspecting seven GitHub projects and the Canva, Kittl, Fotor, Adobe Express and Playground template collections. Fourteen new directions have independently written prompts, different sample titles, original offline SVG examples and per-template reference links. Sources, checked star counts, licenses, inspection limits and selection reasons are recorded in [template-research.json](assets/template-research.json).
@@ -152,13 +152,13 @@ The cover library includes the existing blank, engraving and neon layouts plus s
 
 | Direction | Demonstration title | Intended example |
 | --- | --- | --- |
-| Conceptual paper typography | 审美不够，怎么用 AI 做出更有质感的产品？ | Product and design |
-| Cinematic storytelling | 换一条路，重新出发 | Change and personal choices |
-| Tactile still life | 买得更少，用得更久 | Thoughtful consumption and repair |
-| Human narrative | 下班以后，生活才刚刚开始 | Everyday experience beyond work |
-| Opinion collage | 信息越多，判断越难？ | Commentary and information judgment |
-| Lifestyle photography | 把周末，还给真实的生活 | Daily life and weekend observation |
-| Literary painting | 在不确定里，慢慢向前 | Personal essays and reflection |
+| Conceptual paper typography | When aesthetics fall short, how can AI create more refined products? | Product and design |
+| Cinematic storytelling | Take another path and start again | Change and personal choices |
+| Tactile still life | Buy less, use longer | Thoughtful consumption and repair |
+| Human narrative | Life begins after work | Everyday experience beyond work |
+| Opinion collage | More information, harder judgment? | Commentary and information judgment |
+| Lifestyle photography | Give the weekend back to real life | Daily life and weekend observation |
+| Literary painting | Moving forward slowly through uncertainty | Personal essays and reflection |
 
 The preview correction replaces six comparison images from 0.10.2, retaining one product/design example and the established typography direction. Original generation briefs and reference versions are recorded in [preview-samples.json](assets/preview-samples.json). It changes demonstration images, not runtime template instructions or user content.
 
@@ -171,20 +171,20 @@ The earlier expansion brought the cover library to **30 selectable templates**; 
 
 | New direction | Demonstration title | Method reference |
 | --- | --- | --- |
-| Split photograph | 普通人的一天 | Canva blog graphics; Fotor banners |
-| Cutout portrait | 找到自己的声音 | ZeroLu magazine portrait; Canva |
-| Monochrome frame | 城市很大，也需要自己的角落 | Fotor black-and-white blog covers |
-| Film sequence | 带着好奇心，去一座陌生的城市 | YouMind travel editorial; Fotor |
-| Torn-paper journal | 把零碎日常，拼成自己的生活 | PicoTrex collage; YouMind |
-| Bauhaus | 让灵感，有地方发生 | Kittl Bauhaus posters |
-| Brutalist type | 别等完美，先开始 | Kittl brutalist posters |
-| Vintage travel | 沿着山路，找回周末 | Playground vintage posters |
-| Cyanotype | 观察一片叶子，重新认识自然 | Original contact-print direction extending GPT Image subject/whitespace research |
-| Ink double exposure | 山水之间，看见另一种生活 | GPT Image ink double-exposure category |
-| Miniature scene | 小小书店，装得下一个世界 | ZeroLu narrative diorama category |
-| Matte gradient | 工具在变，创造力走向哪里 | Adobe Express banner hierarchy |
-| Motion moment | 迈出第一步，比准备更重要 | GPT Image sports campaign category |
-| Exhibition catalog | 换个角度，重新看一件作品 | Kittl art-show posters; editorial hierarchy research |
+| Split photograph | An ordinary person's day | Canva blog graphics; Fotor banners |
+| Cutout portrait | Find your own voice | ZeroLu magazine portrait; Canva |
+| Monochrome frame | The city is large, yet everyone needs a corner of their own | Fotor black-and-white blog covers |
+| Film sequence | Visit an unfamiliar city with curiosity | YouMind travel editorial; Fotor |
+| Torn-paper journal | Piece together life's fragments into a life of your own | PicoTrex collage; YouMind |
+| Bauhaus | Give inspiration a place to happen | Kittl Bauhaus posters |
+| Brutalist type | Don't wait for perfect—just start | Kittl brutalist posters |
+| Vintage travel | Follow the mountain road to reclaim the weekend | Playground vintage posters |
+| Cyanotype | Observe a leaf and rediscover nature | Original contact-print direction extending GPT Image subject/whitespace research |
+| Ink double exposure | Between mountains and water, see another way of living | GPT Image ink double-exposure category |
+| Miniature scene | A small bookstore that holds a world | ZeroLu narrative diorama category |
+| Matte gradient | Tools change—where does creativity go? | Adobe Express banner hierarchy |
+| Motion moment | Taking the first step matters more than preparing | GPT Image sports campaign category |
+| Exhibition catalog | Look at a work again from a new angle | Kittl art-show posters; editorial hierarchy research |
 
 The new offline previews are explicitly labeled **Typography example**. They show composition and headline hierarchy; they are not copied website templates, third-party photographs or proof that an image model reproduced the sample. The selected article supplies the actual subject, exact title and supported facts. A verified number is required before a numeric cover can emphasize it, and title-free output takes precedence over every style rule. No website login, runtime reference-site fetch, bundled editor dependency or font download was added.
 
@@ -194,4 +194,4 @@ The additional styles are: Magazine, Fresh and airy, Minimalist, Midcentury retr
 
 Every style specifies typography, spatial composition and material/image language independently. Some deliberately use Song/Ming serif or handwritten forms; others use bitmap strokes, technical lettering, dimensional clay or fabric letters. Layout adapts to the selected article and dimensions. With text disabled, all lettering and title-only panels are removed. Article-body illustrations reuse the medium without importing the cover headline or its layout.
 
-All thirty generated previews use the fictional title **生活，值得重新想象** and a room/window/chair/plant scene. This controlled comparison makes differences in type, hierarchy, material and composition visible. Previews were generated with the built-in imagegen tool, encoded as WebP without repainting, and stored as five six-cell sheets; SVG viewports select a single cell at runtime. Generation briefs and frame coordinates are included in [style-previews.json](assets/style-previews.json). The Chinese-ink preview received a targeted imagegen cleanup to remove an unwanted artist-like seal. These previews are not user articles or fixed content for future generation, and are not proof of output from every supported provider.
+All thirty generated previews use the fictional title **Life is worth reimagining** and a room/window/chair/plant scene. This controlled comparison makes differences in type, hierarchy, material and composition visible. Previews were generated with the built-in imagegen tool, encoded as WebP without repainting, and stored as five six-cell sheets; SVG viewports select a single cell at runtime. Generation briefs and frame coordinates are included in [style-previews.json](assets/style-previews.json). The Chinese-ink preview received a targeted imagegen cleanup to remove an unwanted artist-like seal. These previews are not user articles or fixed content for future generation, and are not proof of output from every supported provider.
