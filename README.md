@@ -1,6 +1,6 @@
 # Banana Design
 
-> Design lab: isolated workspace on `design/visual-system`. UI and template changes follow [DESIGN.md](DESIGN.md). Experiment scope and validation are recorded in [notes/design-lab-2026-10-22.md](notes/design-lab-2026-10-22.md).
+> Design lab: isolated workspace on `design/visual-system`. UI and template changes follow [DESIGN.md](DESIGN.md).
 
 Create article-led covers and illustrations in Obsidian desktop. Choose an article, a visual template, and independent planning and image services. Preview results, export PNGs, and insert illustrations at approved locations.
 
