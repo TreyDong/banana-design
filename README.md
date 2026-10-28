@@ -1,6 +1,6 @@
 # Banana Design
 
-> Design lab: isolated workspace on `design/visual-system`. UI and template changes follow [DESIGN.md](DESIGN.md).
+> Design lab: isolated workspace on `design/visual-system`. UI changes follow [DESIGN.md](DESIGN.md).
 
 Create article-led covers and illustrations in Obsidian desktop. Choose an article, a visual template, and independent planning and image services. Preview results, export PNGs, and insert illustrations at approved locations.
 
@@ -104,6 +104,7 @@ Custom user assets are not bundled. This is an independent community plugin, not
 - Settings pages (Files, WeChat, About) now use bordered group cards with a heading row, matching the Banana Reader settings layout; the SSH relay group carries an enable toggle in its heading and keeps its fields collapsed until switched on.
 - Added a **fixed-IP relay over SSH** for WeChat publishing: provide a server's SSH address plus password or private key and the plugin tunnels the `access_token` request through it (bundled `ssh2`, no server-side setup), so the whitelist needs only the server's fixed IP. Uploads and drafts stay direct, with an automatic tunnel retry on error 40164. Host-key fingerprints are pinned on first use; SSH secrets are stored in SecretStorage. Replaced the egress-IP lookup with a **connectivity test** that performs a real token request and, on 40164, parses and copies the effective egress IP. An end-to-end regression test runs a mock SSH server and TLS endpoint through the real tunnel code.
 - Added **WeChat formatting and publishing**: a fourth workspace tab renders the current article into WeChat-compatible rich text with four built-in inline-style themes, a phone-width preview, image placeholder upload and draft-box push for verified accounts. AppID/AppSecret live in Obsidian SecretStorage; the secret never enters `data.json`. Publishing follows the official draft flow (`token` → `uploadimg` → `add_material` → `draft/add`); final publishing remains a manual step at mp.weixin.qq.com. `Copy rich text` is the fallback for accounts without API access. Markdown parsing uses the bundled [marked](https://github.com/markedjs/marked) 18.1.1 (MIT; see THIRD_PARTY_NOTICES.md). New regression tests cover theme structure, the formatting pipeline (including Obsidian syntax handling) and the API client with a stubbed network.
+
 ### 0.10.2 — 2026-10-20
 
 - Added an interface language setting with automatic, Simplified Chinese and English modes, including settings help, workspace controls, model dialogs and authored status/error messages.
