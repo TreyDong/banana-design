@@ -7,6 +7,11 @@ const vm = require('node:vm');
 const http = require('node:http');
 const {createRequire} = require('node:module');
 const root = path.resolve(__dirname, '..');
+test('release bundle fits Sync Standard and contains no dynamic compatibility probes',()=>{
+  const bundle=fs.readFileSync(path.join(root,'main.js'));
+  assert.ok(bundle.length<=5_000_000,`Release must fit within 5 MB; got ${bundle.length} bytes`);
+  assert.doesNotMatch(bundle.toString('utf8'),/\b(?:eval|Function)\s*\(/);
+});
 const services = require('../src/services/model-services.js');
 const figures = require('../src/illustrations/figure-agent.js');
 const i18n = require('../src/i18n.js');
@@ -249,7 +254,7 @@ test('standard three-file release loads without sibling modules, assets, network
 });
 test('both bundled preview images remain available without an installed asset directory',()=>{
   const preview=hooks.BDView.prototype.templatePreview;
-  assert.match(preview.call({}, {previewAsset:'dan-koe'}),/^data:image\/png;base64,/);
+  assert.match(preview.call({}, {previewAsset:'dan-koe'}),/^data:image\/webp;base64,/);
   assert.match(preview.call({}, {previewAsset:'neon-card'}),/^data:image\/svg\+xml;base64,/);
 });
 test('body template library shows available style samples instead of generic layout placeholders',()=>{
