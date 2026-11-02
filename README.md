@@ -1,59 +1,12 @@
-# Banana Design
+# Banana Design — Archived / 已归档
 
-Create article-led covers and illustrations in [Obsidian](https://obsidian.md/) desktop. Choose an article, a visual template, and independent planning and image services. Preview results, export PNGs, and insert illustrations at approved locations.
+Banana Design has been retired. Development continues in [Banana Studio](https://github.com/TreyDong/banana-studio), its successor for creating illustrations and publishing from Obsidian. This repository is archived and no longer offers plugin downloads or updates.
 
-**Desktop only · Obsidian 1.11.4 or later**
+Banana Design 已停止维护并归档，后续开发迁移至 [Banana Studio](https://github.com/TreyDong/banana-studio)。本仓库不再提供插件下载或更新。
 
-## Features
+Banana Studio uses a separate plugin ID and does not automatically import Banana Design settings, credentials, or history. Existing files and images in your vault are not removed by this project change.
 
-- **Cover and body illustrations** from the current Markdown note, with separate formats, templates, dimensions, and visual styles
-- **Planning and image services configured independently** — Codex CLI or your own API connections (OpenAI, Anthropic, Gemini, OpenRouter, Seedream, and other OpenAI-compatible endpoints; Ollama and local loopback services also work)
-- **Canvas text planned from the article**, with inline editing before generation; **region edit** to change only a marked area of a generated cover
-- **Article illustration planning** with owned paragraph markers; insertion never silently appends images
-- **WeChat Official Account** rich-text preview and draft publishing for verified accounts, including an optional fixed-IP SSH relay
-- **X (Twitter) thread publishing** with AI rewrite or deterministic splitting, OAuth 1.0a or OAuth 2.0, and optional proxy / SSH relay
-- Interface language follows Obsidian (Simplified Chinese or English)
-
-## Installation
-
-Install from the [Obsidian Community plugins listing](https://community.obsidian.md/plugins/banana-design), or download `main.js`, `manifest.json`, and `styles.css` from the matching [GitHub Release](https://github.com/TreyDong/banana-design/releases) into `<vault>/.obsidian/plugins/banana-design/` and enable the plugin.
-
-The release package is larger than 5 MB, so Obsidian Sync Standard cannot sync it; install the plugin separately on each desktop if you use that plan.
-
-## Getting started
-
-1. Enable the plugin and run **Open illustration workspace** (`banana-design:open`), or use the ribbon icon.
-2. Open a Markdown note (or click the ribbon while a note is active). The workspace has two stages: **Create images** (Cover / Body illustrations) and **Preview & publish** (Original article / WeChat / X).
-3. Choose a format and template, enter a request, and generate candidates. Reference images can be picked from disk or the vault.
-4. Export a PNG, insert a cover, or confirm a planned illustration batch. Restarting the workspace clears the current view; saved images and history remain.
-
-API credentials and publishing secrets use Obsidian SecretStorage. The plugin does not replace the Markdown editor or act as a general autonomous agent.
-
-## Models and connections
-
-Configure **Planning** and **Image generation** separately in settings. New installs default to Codex CLI connections; the plugin does not start model calls or install a CLI on enable. Model discovery runs only when requested. Presets are endpoint suggestions, not proof of account access. Remote endpoints require HTTPS; loopback HTTP is allowed for local services.
-
-## Privacy
-
-- The plugin is MIT licensed, with no payment gate, ads, author-operated service, or client-side telemetry. AI usage is billed by the provider you configure.
-- Only explicit requests send article text, prompts, or reference images to the chosen planning or image service. The vault is not scanned in the background.
-- Session data lives in `<vault>/.obsidian/plugins/banana-design/data.json`; generated PNGs stay in the configured vault folder. Syncing those locations may sync private content.
-- This is an independent community plugin, not an official Obsidian, Qiaomu, OpenAI, or Dan Koe product.
-
-## Development
-
-Requires Node.js 20+ and npm.
-
-```sh
-npm ci
-npm run check
-```
-
-`npm run build` creates an unminified CommonJS `main.js` in the project root. Release assets are `main.js`, `manifest.json`, and `styles.css` under a tag that matches the manifest version (no `v` prefix).
-
-Pushing a stable version tag runs the release workflow: it checks version metadata, builds and tests the plugin, then publishes those three files as individual GitHub Release assets. Keep ZIP archives out of the plugin release; Obsidian downloads only the individual files.
-
-For changes in each release, see the [GitHub Releases](https://github.com/TreyDong/banana-design/releases) page.
+Banana Studio 使用独立的插件标识，不会自动迁移 Banana Design 的设置、凭据或历史记录。已有笔记和图片不会因项目迁移而被删除。
 
 ## License
 
