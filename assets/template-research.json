@@ -1,6 +1,5 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-20",
   "goal": "30 default selectable cover templates, excluding body-only diagrams",
   "counts": {
     "beforeCovers": 16,
@@ -12,7 +11,7 @@
     "A different subject, composition or material method is required; palette variants alone do not count.",
     "Adapt headline hierarchy to Chinese; preserve user wording, text switch and output ratio.",
     "SVG previews are original typography/composition examples, not photorealism or image-model acceptance evidence.",
-    "Stars describe a repository at the checked date; they do not rank individual templates or prove click-through performance."
+    "Stars describe a repository at the time of the snapshot; they do not rank individual templates or prove click-through performance."
   ],
   "sources": [
     {
